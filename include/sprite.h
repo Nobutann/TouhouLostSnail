@@ -7,6 +7,9 @@ typedef struct
 {
     Texture2D *frames;
     int frame_count;
+    int current_frame;
+    float frame_time;
+    float timer;
 } Animation;
 
 typedef struct
@@ -14,11 +17,9 @@ typedef struct
     Animation idle;
     Animation fly_left;
     Animation fly_right;
-    float frame_change;
-    float timer;
-    Animation *current_anim;
 } PlayerSprites;
 
-Animation LoadAnimation(const char *base_path, int frame_count);
+static Texture2D* LoadTextureArray(const char **filepaths, int count);
+static Texture2D* UnloadTextureArray(Texture2D *textures, int count);
 
 #endif
