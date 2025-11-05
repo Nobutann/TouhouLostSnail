@@ -11,7 +11,7 @@ void InitPlayer(Player *player, Vector2 initial_pos, float speed)
 
 void UpdatePlayer(Player *player, float dt)
 {
-    Vector2 input;
+    Vector2 input = {0, 0};
 
     if (IsKeyDown(KEY_UP))
     {

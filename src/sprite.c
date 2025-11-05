@@ -56,7 +56,7 @@ void LoadPlayerSprites(PlayerSprites *player_sprites)
         "assets/sprites/Player/reimuright/reimuright-8.png",
     };
 
-    int right_frame_count = sizeof(rightpath) / sizeof(idlepath[0]);
+    int right_frame_count = sizeof(rightpath) / sizeof(rightpath[0]);
     player_sprites->fly_right.frames = LoadTextureArray(rightpath, right_frame_count);
     player_sprites->fly_right.frame_count = right_frame_count;
     player_sprites->fly_right.frame_time = 0.15;
@@ -73,10 +73,9 @@ void LoadPlayerSprites(PlayerSprites *player_sprites)
         "assets/sprites/Player/reimuleft/reimuleft-6.png",
         "assets/sprites/Player/reimuleft/reimuleft-7.png",
         "assets/sprites/Player/reimuleft/reimuleft-8.png",
-        "assets/sprites/Player/reimuleft/reimuleft-9.png",
     };
 
-    int left_frame_count = sizeof(leftpath) / sizeof(idlepath[0]);
+    int left_frame_count = sizeof(leftpath) / sizeof(leftpath[0]);
     player_sprites->fly_left.frames = LoadTextureArray(leftpath, left_frame_count);
     player_sprites->fly_left.frame_count = left_frame_count;
     player_sprites->fly_left.frame_time = 0.15f;

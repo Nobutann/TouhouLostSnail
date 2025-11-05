@@ -8,7 +8,7 @@ int main(void)
 
     Player player;
     Vector2 start_pos = {400, 300};
-    InitPlayer(&player, start_pos, 200.0f);
+    InitPlayer(&player, start_pos, 350.0f);
 
     while (!WindowShouldClose())
     {
@@ -17,8 +17,8 @@ int main(void)
         UpdatePlayer(&player, dt);
 
         BeginDrawing();
-        DrawPlayer(&player);
         ClearBackground(RAYWHITE);
+        DrawPlayer(&player);
         EndDrawing();
     }
 
