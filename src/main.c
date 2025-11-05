@@ -3,7 +3,7 @@
 
 int main(void)
 {
-    InitWindow(800, 600, "Touhou: Lost Snail");
+    InitWindow(1920, 1080, "Touhou: Lost Snail");
     SetTargetFPS(60);
 
     Player player;

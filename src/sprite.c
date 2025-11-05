@@ -46,11 +46,6 @@ void LoadPlayerSprites(PlayerSprites *player_sprites)
 
     const char *rightpath[] = 
     {
-        "assets/sprites/Player/reimuright/reimuright-1.png",
-        "assets/sprites/Player/reimuright/reimuright-2.png",
-        "assets/sprites/Player/reimuright/reimuright-3.png",
-        "assets/sprites/Player/reimuright/reimuright-4.png",
-        "assets/sprites/Player/reimuright/reimuright-5.png",
         "assets/sprites/Player/reimuright/reimuright-6.png",
         "assets/sprites/Player/reimuright/reimuright-7.png",
         "assets/sprites/Player/reimuright/reimuright-8.png",
@@ -65,11 +60,6 @@ void LoadPlayerSprites(PlayerSprites *player_sprites)
 
     const char *leftpath[] = 
     {
-        "assets/sprites/Player/reimuleft/reimuleft-1.png",
-        "assets/sprites/Player/reimuleft/reimuleft-2.png",
-        "assets/sprites/Player/reimuleft/reimuleft-3.png",
-        "assets/sprites/Player/reimuleft/reimuleft-4.png",
-        "assets/sprites/Player/reimuleft/reimuleft-5.png",
         "assets/sprites/Player/reimuleft/reimuleft-6.png",
         "assets/sprites/Player/reimuleft/reimuleft-7.png",
         "assets/sprites/Player/reimuleft/reimuleft-8.png",
