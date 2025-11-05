@@ -2,17 +2,19 @@
 #define PLAYER_H
 
 #include "raylib.h"
+#include "sprite.h"
 
-typedef struct Player
+typedef struct
 {
     int health;
-    Vector2 velocity;
     Vector2 position;
     float speed;
+    PlayerSprites sprites;
 } Player;
 
-void initPlayer(Player *player);
-
-void updatePlayer(Player *player, float dt);
+void InitPlayer(Player *player, Vector2 initial_pos, float speed);
+void UpdatePlayer(Player *player, float dt);
+void DrawPlayer(Player *player);
+void UnloadPlayer(Player *player);
 
 #endif

@@ -1,29 +1,76 @@
 #include "player.h"
+#include <math.h>
 
-void initPlayer(Player *player)
+void InitPlayer(Player *player, Vector2 initial_pos, float speed)
 {
-    player->position = (Vector2){400.0f, 300.0f};
-    player->velocity = (Vector2){0.0f, 0.0f};
-    player->speed = 200.0f;
-    player->health = 100;
+    player->position = initial_pos;
+    player->speed = speed;
+    
+    LoadPlayerSprites(&player->sprites);
 }
 
-void updatePlayer(Player *player, float dt)
+void UpdatePlayer(Player *player, float dt)
 {
-    if (IsKeyDown(KEY_RIGHT))
-    {
-        player->position.x += player->speed * dt;
-    }
-    else if (IsKeyDown(KEY_LEFT))
-    {
-        player->position.x -= player->speed * dt;
-    }
+    Vector2 input;
+
     if (IsKeyDown(KEY_UP))
     {
-        player->position.y -= player->speed * dt;
+        input.y = -1;
     }
-    else if (IsKeyDown(KEY_DOWN))
+    if (IsKeyDown(KEY_DOWN))
     {
-        player->position.y += player->speed * dt;
+        input.y = 1;
     }
+    if (IsKeyDown(KEY_RIGHT))
+    {
+        input.x = 1;
+    }
+    if (IsKeyDown(KEY_LEFT))
+    {
+        input.x = -1;
+    }
+
+    if (input.x != 0 && input.y != 0)
+    {
+        float length = sqrtf(input.x * input.x + input.y * input.y);
+        input.x /= length;
+        input.y /= length;
+    }
+
+    player->position.x += input.x * player->speed * dt;
+    player->position.y += input.y * player->speed * dt;
+
+    Animation *anim = &player->sprites.idle;
+
+    if (input.x < 0)
+    {
+        anim = &player->sprites.fly_left;
+    }
+    else if (input.x > 0)
+    {
+        anim = &player->sprites.fly_right;
+    }
+
+    UpdateAnimation(anim, dt);
+}
+
+void DrawPlayer(Player *player)
+{
+    Animation *anim = &player->sprites.idle;
+
+    if (IsKeyDown(KEY_LEFT))
+    {
+        anim = &player->sprites.fly_left;
+    }
+    else if (IsKeyDown(KEY_RIGHT))
+    {
+        anim = &player->sprites.fly_right;
+    }
+
+    DrawAnimationFrame(anim, player->position, 2.0f, WHITE);
+}
+
+void UnloadPlayer(Player *player)
+{
+    UnloadPlayerSprites(&player->sprites);
 }

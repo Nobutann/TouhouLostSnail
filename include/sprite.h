@@ -19,7 +19,9 @@ typedef struct
     Animation fly_right;
 } PlayerSprites;
 
-static Texture2D* LoadTextureArray(const char **filepaths, int count);
-static Texture2D* UnloadTextureArray(Texture2D *textures, int count);
+void LoadPlayerSprites(PlayerSprites *player_sprites);
+void UnloadPlayerSprites(PlayerSprites *player_sprites);
+void UpdateAnimation(Animation *anim, float dt);
+void DrawAnimationFrame(Animation *anim, Vector2 position, float scale, Color tint);
 
 #endif
