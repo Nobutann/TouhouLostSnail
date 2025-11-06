@@ -1,28 +1,42 @@
 #include "raylib.h"
 #include "player.h"
+#include "screens.h"
 
 int main(void)
 {
-    InitWindow(1920, 1080, "Touhou: Lost Snail");
+    InitWindow(1280, 800, "Touhou: Lost Snail");
     SetTargetFPS(60);
 
-    Player player;
-    Vector2 start_pos = {400, 300};
-    InitPlayer(&player, start_pos, 350.0f);
+    GameScreen current_screen = MENU_SCREEN;
 
-    while (!WindowShouldClose())
+    while (current_screen != EXIT_SCREEN && !WindowShouldClose())
     {
-        float dt = GetFrameTime();
-        
-        UpdatePlayer(&player, dt);
+        if (current_screen == MENU_SCREEN)
+        {
+            current_screen = menu();
+        }
+        if (current_screen == GAME_SCREEN)
+        {
+            Player player;
+            Vector2 start_pos = {400, 300};
+            InitPlayer(&player, start_pos, 350.0f);
 
-        BeginDrawing();
-        ClearBackground(RAYWHITE);
-        DrawPlayer(&player);
-        EndDrawing();
+            while (!WindowShouldClose())
+            {
+                float dt = GetFrameTime();
+                
+                UpdatePlayer(&player, dt);
+
+                BeginDrawing();
+                ClearBackground(RAYWHITE);
+                DrawPlayer(&player);
+                EndDrawing();
+            }
+
+            UnloadPlayer(&player);
+        }
     }
 
-    UnloadPlayer(&player);
     CloseWindow();
 
     return 0;
