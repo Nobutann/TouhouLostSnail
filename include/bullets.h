@@ -2,6 +2,7 @@
 #define BULLETS_H
 
 #include "raylib.h"
+#define MAX_BULLETS 100
 
 typedef struct
 {
@@ -11,8 +12,8 @@ typedef struct
     bool active;
 } Bullet;
 
-void InitBullet(Bullet *bullets);
-void UpdateBullets(Bullet *bullets);
+void InitBullet(Bullet *bullets, Texture2D sprite);
+void UpdateBullets(Bullet *bullets, float dt);
 void DrawBullets(Bullet *bullets);
 
 #endif

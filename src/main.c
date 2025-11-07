@@ -1,6 +1,7 @@
 #include "raylib.h"
 #include "player.h"
 #include "screens.h"
+#include "bullets.h"
 
 int main(void)
 {
@@ -18,22 +19,28 @@ int main(void)
         if (current_screen == GAME_SCREEN)
         {
             Player player;
+            Bullet bullets[MAX_BULLETS];
             Vector2 start_pos = {400, 300};
+            Texture2D bullet_sprite = LoadTexture("assets/sprites/bullets/playerbullet.png");
             InitPlayer(&player, start_pos, 350.0f);
+            InitBullet(bullets, bullet_sprite);
 
             while (!WindowShouldClose())
             {
                 float dt = GetFrameTime();
                 
-                UpdatePlayer(&player, dt);
+                UpdatePlayer(&player, dt, bullets);
+                UpdateBullets(bullets, dt);
 
                 BeginDrawing();
                 ClearBackground(RAYWHITE);
                 DrawPlayer(&player);
+                DrawBullets(bullets);
                 EndDrawing();
             }
 
             UnloadPlayer(&player);
+            UnloadTexture(bullet_sprite);
         }
     }
 

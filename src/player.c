@@ -1,5 +1,14 @@
 #include "player.h"
 #include <math.h>
+#include "bullets.h"
+#include "raymath.h"
+#include "sprite.h"
+
+#define BULLET_SPEED 500
+#define FIRE_RATE 0.066f
+#define BULLET_DISTANCE_X 8
+#define BULLET_DISTANCE_Y 20
+#define PLAYER_CENTER 15
 
 void InitPlayer(Player *player, Vector2 initial_pos, float speed)
 {
@@ -9,7 +18,7 @@ void InitPlayer(Player *player, Vector2 initial_pos, float speed)
     LoadPlayerSprites(&player->sprites);
 }
 
-void UpdatePlayer(Player *player, float dt)
+void UpdatePlayer(Player *player, float dt, Bullet *bullets)
 {
     Vector2 input = {0, 0};
 
@@ -35,6 +44,13 @@ void UpdatePlayer(Player *player, float dt)
         float length = sqrtf(input.x * input.x + input.y * input.y);
         input.x /= length;
         input.y /= length;
+    }
+
+    player->shoot_timer -= dt;
+    if (IsKeyDown(KEY_Z) && player->shoot_timer <= 0.0f)
+    {
+        PlayerShoot(player, bullets);
+        player->shoot_timer = FIRE_RATE;
     }
 
     player->position.x += input.x * player->speed * dt;
@@ -68,6 +84,37 @@ void DrawPlayer(Player *player)
     }
 
     DrawAnimationFrame(anim, player->position, 2.0f, WHITE);
+}
+
+void PlayerShoot(Player *player, Bullet *bullets)
+{
+    Vector2 center = 
+    {
+        player->position.x + player->sprites.idle.frames[0].width / 2,
+        player->position.y + player->sprites.idle.frames[0].height / 2
+    };
+
+    for (int i = 0; i < MAX_BULLETS; i++)
+    {
+        if (!bullets[i].active)
+        {
+            bullets[i].position = (Vector2){center.x - BULLET_DISTANCE_X + PLAYER_CENTER, center.y - BULLET_DISTANCE_Y};
+            bullets[i].velocity = (Vector2){0, -BULLET_SPEED};
+            bullets[i].active = true;
+            break;
+        }
+    }
+
+    for (int i = 0; i < MAX_BULLETS; i++)
+    {
+        if (!bullets[i].active)
+        {
+            bullets[i].position = (Vector2){ center.x + BULLET_DISTANCE_X + PLAYER_CENTER, center.y - BULLET_DISTANCE_Y };
+            bullets[i].velocity = (Vector2){0, -BULLET_SPEED};
+            bullets[i].active = true;
+            break;
+        }
+    }
 }
 
 void UnloadPlayer(Player *player)

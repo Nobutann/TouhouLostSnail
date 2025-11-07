@@ -1,27 +1,24 @@
 #include "bullets.h"
 #include "raymath.h"
 
-#define MAX_BULLETS 1000
-
-void InitBullet(Bullet *bullets)
+void InitBullet(Bullet *bullets, Texture2D sprite)
 {
     for (int i = 0; i < MAX_BULLETS; i++)
     {
         bullets[i].active = false;
+        bullets[i].sprite = sprite;
     }
-
-    bullets->sprite = LoadTexture('assets/sprites/bullets/playerbullet.png');
 }
 
-void UpdateBullets(Bullet *bullets)
+void UpdateBullets(Bullet *bullets, float dt)
 {
     for (int i = 0; i < MAX_BULLETS; i++)
     {
         if (bullets[i].active)
         {
-            bullets[i].position = Vector2Add(bullets[i].position, Vector2Scale(bullets[i].velocity, GetFrameTime()));
+            bullets[i].position = Vector2Add(bullets[i].position, Vector2Scale(bullets[i].velocity, dt));
 
-            if (bullets[i].position.x < 0 || bullets[i].position.x > GetScreenWidth() || bullets[i].position.y < 0 || bullets[i].position.y > GetScreenHeight())
+            if (bullets[i].position.y < -bullets[i].sprite.height)
             {
                 bullets[i].active = false;
             }
@@ -35,7 +32,17 @@ void DrawBullets(Bullet *bullets)
     {
         if (bullets[i].active)
         {
-            DrawTextureV(bullets[i].sprite, bullets[i].position, WHITE);
+            Vector2 origin = {bullets[i].sprite.width / 2.0f, bullets[i].sprite.height / 2.0f};
+
+            DrawTexturePro
+            (
+                bullets[i].sprite, 
+                (Rectangle){0, 0, (float)bullets[i].sprite.width, (float)bullets[i].sprite.height},
+                (Rectangle){bullets[i].position.x, bullets[i].position.y, (float)bullets[i].sprite.width, (float)bullets[i].sprite.height},
+                origin,
+                -90.0f,
+                WHITE
+            );
         }
     }
 }
