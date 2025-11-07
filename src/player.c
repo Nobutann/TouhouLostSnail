@@ -4,11 +4,13 @@
 #include "raymath.h"
 #include "sprite.h"
 
-#define BULLET_SPEED 500
+#define BULLET_SPEED 2000
 #define FIRE_RATE 0.066f
 #define BULLET_DISTANCE_X 8
 #define BULLET_DISTANCE_Y 20
 #define PLAYER_CENTER 15
+#define FOCUS_SPEED 300.0f
+#define BASE_SPEED 550.0f
 
 void InitPlayer(Player *player, Vector2 initial_pos, float speed)
 {
@@ -37,6 +39,15 @@ void UpdatePlayer(Player *player, float dt, Bullet *bullets)
     if (IsKeyDown(KEY_LEFT))
     {
         input.x = -1;
+    }
+
+    if (IsKeyDown(KEY_LEFT_SHIFT))
+    {
+        player->speed = FOCUS_SPEED;
+    }
+    else
+    {
+        player->speed = BASE_SPEED;
     }
 
     if (input.x != 0 && input.y != 0)

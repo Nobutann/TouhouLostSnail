@@ -3,6 +3,8 @@
 #include "screens.h"
 #include "bullets.h"
 
+#define BASE_SPEED 550.0f
+
 int main(void)
 {
     InitWindow(1280, 800, "Touhou: Lost Snail");
@@ -22,7 +24,7 @@ int main(void)
             Bullet bullets[MAX_BULLETS];
             Vector2 start_pos = {400, 300};
             Texture2D bullet_sprite = LoadTexture("assets/sprites/bullets/playerbullet.png");
-            InitPlayer(&player, start_pos, 350.0f);
+            InitPlayer(&player, start_pos, BASE_SPEED);
             InitBullet(bullets, bullet_sprite);
 
             while (!WindowShouldClose())
