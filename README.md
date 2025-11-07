@@ -51,7 +51,7 @@ Próximas etapas:
 
 ## 🖼️ Capturas de Tela
 
-![Tela Inicial](telainicialprint.png)
+![Tela Inicial](img/telainicialprint.png)
 
 --- 
 
