@@ -66,13 +66,15 @@ essa obra incrível.
 ## 👾 Créditos
 
 Desenvolvimento: 
-    - Luiz Gonzaga
-    - Marco Aurélio
-    - Walter Maia
+
+- Luiz Gonzaga
+- Marco Aurélio
+- Walter Maia
 
 Inspiração:
-    - Touhou Project (Team Shanghai Alice)
-    - Monogatari Series (Nisio Isin / Shaft)
+
+- Touhou Project (Team Shanghai Alice)
+- Monogatari Series (Nisio Isin / Shaft)
 
 
 ## ⚠️ Aviso Legal
