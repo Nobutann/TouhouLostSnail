@@ -15,7 +15,7 @@ typedef struct
 } Player;
 
 void InitPlayer(Player *player, Vector2 initial_pos, float speed);
-void UpdatePlayer(Player *player, float dt, Bullet *bullets);
+void UpdatePlayer(Player *player, float dt, Bullet *bullets, Sound shoot_sound);
 void DrawPlayer(Player *player);
 void UnloadPlayer(Player *player);
 void PlayerShoot(Player *player, Bullet *bullets);

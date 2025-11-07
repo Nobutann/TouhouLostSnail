@@ -20,7 +20,7 @@ void InitPlayer(Player *player, Vector2 initial_pos, float speed)
     LoadPlayerSprites(&player->sprites);
 }
 
-void UpdatePlayer(Player *player, float dt, Bullet *bullets)
+void UpdatePlayer(Player *player, float dt, Bullet *bullets, Sound shoot_sound)
 {
     Vector2 input = {0, 0};
 
@@ -62,6 +62,7 @@ void UpdatePlayer(Player *player, float dt, Bullet *bullets)
     {
         PlayerShoot(player, bullets);
         player->shoot_timer = FIRE_RATE;
+        PlaySound(shoot_sound);
     }
 
     player->position.x += input.x * player->speed * dt;

@@ -8,18 +8,26 @@
 int main(void)
 {
     InitWindow(1280, 800, "Touhou: Lost Snail");
+    InitAudioDevice();
     SetTargetFPS(60);
 
     GameScreen current_screen = MENU_SCREEN;
+
+    Sound shoot_sound = LoadSound("assets/sounds/player_sounds/playerattack.wav");
+    SetSoundVolume(shoot_sound, 0.02f);
+    Music menu_music = LoadMusicStream("assets/sounds/musics/menumusic/menumusic.wav");
 
     while (current_screen != EXIT_SCREEN && !WindowShouldClose())
     {
         if (current_screen == MENU_SCREEN)
         {
-            current_screen = menu();
+            PlayMusicStream(menu_music);
+            current_screen = menu(menu_music);
         }
         if (current_screen == GAME_SCREEN)
         {
+            StopMusicStream(menu_music);
+            UnloadMusicStream(menu_music);
             Player player;
             Bullet bullets[MAX_BULLETS];
             Vector2 start_pos = {400, 300};
@@ -31,7 +39,7 @@ int main(void)
             {
                 float dt = GetFrameTime();
                 
-                UpdatePlayer(&player, dt, bullets);
+                UpdatePlayer(&player, dt, bullets, shoot_sound);
                 UpdateBullets(bullets, dt);
 
                 BeginDrawing();
@@ -46,6 +54,9 @@ int main(void)
         }
     }
 
+    UnloadSound(shoot_sound);
+
+    CloseAudioDevice();
     CloseWindow();
 
     return 0;

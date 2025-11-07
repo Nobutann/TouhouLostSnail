@@ -1,7 +1,7 @@
 #include "screens.h"
 #include "raylib.h"
 
-GameScreen menu()
+GameScreen menu(Music menu_music)
 {
     const char options[3][8] = 
     {
@@ -24,6 +24,8 @@ GameScreen menu()
     
     while (!WindowShouldClose())
     {
+        UpdateMusicStream(menu_music);
+        
         if (IsKeyPressed(KEY_UP))
         {
             selected = selected - 1;

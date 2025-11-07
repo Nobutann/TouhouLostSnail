@@ -1,6 +1,8 @@
 #ifndef SCREENS_H
 #define SCREENS_H
 
+#include "raylib.h"
+
 typedef enum
 {
     MENU_SCREEN,
@@ -9,6 +11,6 @@ typedef enum
     EXIT_SCREEN
 } GameScreen;
 
-GameScreen menu();
+GameScreen menu(Music menu_music);
 
 #endif
