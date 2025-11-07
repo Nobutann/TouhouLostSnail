@@ -72,7 +72,6 @@ Desenvolvimento:
 
 Inspiração:
     - Touhou Project (Team Shanghai Alice)
-
     - Monogatari Series (Nisio Isin / Shaft)
 
 
