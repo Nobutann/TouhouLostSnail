@@ -25,14 +25,16 @@ O jogo mistura:
 🚧 **Status:** Em desenvolvimento (fase inicial)
 
 Atualmente, o jogo conta com:
-    - Sistema de jogador funcional (movimentação, sprites e tiro básico)
-    - Menu inicial e lógica de transição de telas
+
+- Sistema de jogador funcional (movimentação, sprites e tiro básico)
+- Menu inicial e lógica de transição de telas
 
 Próximas etapas:
-    - Implementar inimigos e padrões de ataque
-    - Criar sistema de colisão e pontuação
-    - dicionar trilha sonora e efeitos sonoros
-    - Refinar interface e menus
+
+- Implementar inimigos e padrões de ataque
+- Criar sistema de colisão e pontuação
+- dicionar trilha sonora e efeitos sonoros
+- Refinar interface e menus
 
 ---
 
