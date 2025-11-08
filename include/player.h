@@ -5,9 +5,13 @@
 #include "sprite.h"
 #include "bullets.h"
 
+typedef struct HealthNode {
+    struct HealthNode *next;
+} HealthNode;
+
 typedef struct
 {
-    int health;
+    HealthNode *healths;
     Vector2 position;
     float speed;
     PlayerSprites sprites;
@@ -19,5 +23,6 @@ void UpdatePlayer(Player *player, float dt, Bullet *bullets, Sound shoot_sound);
 void DrawPlayer(Player *player);
 void UnloadPlayer(Player *player);
 void PlayerShoot(Player *player, Bullet *bullets);
+void LoseHealth(Player *player);
 
 #endif

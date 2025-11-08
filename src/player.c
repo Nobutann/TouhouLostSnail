@@ -3,6 +3,7 @@
 #include "bullets.h"
 #include "raymath.h"
 #include "sprite.h"
+#include <stdlib.h>
 
 #define BULLET_SPEED 2000
 #define FIRE_RATE 0.066f
@@ -12,11 +13,22 @@
 #define FOCUS_SPEED 300.0f
 #define BASE_SPEED 550.0f
 
+HealthNode g_health1, g_health2, g_health3, g_health4;
+
 void InitPlayer(Player *player, Vector2 initial_pos, float speed)
 {
+    player->healths = NULL;
+
     player->position = initial_pos;
     player->speed = speed;
     
+    g_health1.next = &g_health2;
+    g_health2.next = &g_health3;
+    g_health3.next = &g_health4;
+    g_health4.next = NULL;
+
+    player->healths = &g_health1;
+
     LoadPlayerSprites(&player->sprites);
 }
 
@@ -132,4 +144,22 @@ void PlayerShoot(Player *player, Bullet *bullets)
 void UnloadPlayer(Player *player)
 {
     UnloadPlayerSprites(&player->sprites);
+}
+
+
+
+void LoseHealth(Player *player)
+{
+    if (player->healths == NULL) 
+    {   
+        printf("Game Over\n");
+        return;
+    }
+
+    player->healths = player->healths->next;
+
+    if (player->healths == NULL)
+    {
+        printf("Perdeu sua ultima vida!\n");
+    }
 }
