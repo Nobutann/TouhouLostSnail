@@ -32,6 +32,8 @@ int main(void)
             Texture2D bullet_sprite = LoadTexture("assets/sprites/bullets/playerbullet.png");
             InitPlayer(&player, start_pos, BASE_SPEED);
             InitBullet(bullets, bullet_sprite);
+            Animation map;
+            LoadMapSprites(&map);
 
             while (!WindowShouldClose())
             {
@@ -42,6 +44,9 @@ int main(void)
 
                 BeginDrawing();
                 ClearBackground(RAYWHITE);
+                Vector2 map_pos = {0, 0};
+                DrawAnimationFrame(&map, map_pos, 1.0f, WHITE);
+                UpdateAnimation(&map, dt);
                 DrawPlayer(&player);
                 DrawBullets(bullets);
                 EndDrawing();
@@ -49,6 +54,7 @@ int main(void)
 
             UnloadPlayer(&player);
             UnloadTexture(bullet_sprite);
+            UnloadMapSprites(&map);
         }
     }
 
