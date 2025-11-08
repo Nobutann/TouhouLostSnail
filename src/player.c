@@ -14,6 +14,7 @@ void InitPlayer(Player *player, Vector2 initial_pos, float speed)
 {
     player->position = initial_pos;
     player->speed = speed;
+    player->shoot_timer = 0.0f;
     
     LoadPlayerSprites(&player->sprites);
 }
@@ -38,7 +39,7 @@ void UpdatePlayer(Player *player, float dt, Bullet *bullets, Sound shoot_sound)
     {
         input.x = -1;
     }
-
+    
     if (IsKeyDown(KEY_LEFT_SHIFT))
     {
         player->speed = FOCUS_SPEED;

@@ -13,7 +13,7 @@ int main(void)
 
     Sound shoot_sound = LoadSound("assets/sounds/player_sounds/playerattack.wav");
     SetSoundVolume(shoot_sound, 0.02f);
-    Music menu_music = LoadMusicStream("assets/sounds/musics/menumusic/menumusic.wav");
+    Music menu_music = LoadMusicStream("assets/sounds/musics/menumusic/menumusic.mp3");
 
     while (current_screen != EXIT_SCREEN && !WindowShouldClose())
     {
