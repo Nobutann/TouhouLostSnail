@@ -3,8 +3,6 @@
 #include "screens.h"
 #include "bullets.h"
 
-#define BASE_SPEED 550.0f
-
 int main(void)
 {
     InitWindow(1280, 800, "Touhou: Lost Snail");
@@ -15,7 +13,7 @@ int main(void)
 
     Sound shoot_sound = LoadSound("assets/sounds/player_sounds/playerattack.wav");
     SetSoundVolume(shoot_sound, 0.02f);
-    Music menu_music = LoadMusicStream("assets/sounds/musics/menumusic/menumusic.wav");
+    Music menu_music = LoadMusicStream("assets/sounds/musics/menumusic/menumusic.mp3");
 
     while (current_screen != EXIT_SCREEN && !WindowShouldClose())
     {
@@ -34,6 +32,8 @@ int main(void)
             Texture2D bullet_sprite = LoadTexture("assets/sprites/bullets/playerbullet.png");
             InitPlayer(&player, start_pos, BASE_SPEED);
             InitBullet(bullets, bullet_sprite);
+            Animation map;
+            LoadMapSprites(&map);
 
             while (!WindowShouldClose())
             {
@@ -44,13 +44,18 @@ int main(void)
 
                 BeginDrawing();
                 ClearBackground(RAYWHITE);
+                Vector2 map_pos = {0, 0};
+                DrawAnimationFrame(&map, map_pos, 1.0f, WHITE);
+                UpdateAnimation(&map, dt);
                 DrawPlayer(&player);
                 DrawBullets(bullets);
+                DrawHealths(&player);
                 EndDrawing();
             }
 
             UnloadPlayer(&player);
             UnloadTexture(bullet_sprite);
+            UnloadMapSprites(&map);
         }
     }
 

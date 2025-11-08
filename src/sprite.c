@@ -80,6 +80,29 @@ void UnloadPlayerSprites(PlayerSprites *player_sprites)
     UnloadTextureArray(player_sprites->fly_left.frames, player_sprites->fly_left.frame_count);
 }
 
+void LoadMapSprites(Animation *map)
+{
+    const char *mappath[] = 
+    {
+        "assets/sprites/map/background1.png",
+        "assets/sprites/map/background2.png",
+        "assets/sprites/map/background3.png",
+        "assets/sprites/map/background4.png",
+    };
+
+    int map_frame_count = sizeof(mappath) / sizeof(mappath[0]);
+    map->frames = LoadTextureArray(mappath, map_frame_count);
+    map->frame_count = map_frame_count;
+    map->frame_time = 0.15f;
+    map->current_frame = 0;
+    map->timer = 0.0f;
+}
+
+void UnloadMapSprites(Animation *map)
+{
+    UnloadTextureArray(map->frames, map->frame_count);
+}
+
 void UpdateAnimation(Animation *anim, float dt)
 {
     anim->timer += dt;

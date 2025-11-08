@@ -60,7 +60,7 @@ GameScreen menu(Music menu_music)
         }
 
         BeginDrawing();
-        ClearBackground(BLACK);
+        ClearBackground(RAYWHITE);
 
         DrawTexture(background, background_pos.x, background_pos.y, WHITE);
 

@@ -6,13 +6,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define BULLET_SPEED 2000
-#define FIRE_RATE 0.066f
+#define FIRE_RATE 0.066f /* 15 tiros por segundo */
 #define BULLET_DISTANCE_X 8
 #define BULLET_DISTANCE_Y 20
 #define PLAYER_CENTER 15
 #define FOCUS_SPEED 300.0f
-#define BASE_SPEED 550.0f
 
 HealthNode g_health1, g_health2, g_health3, g_health4;
 
@@ -22,6 +20,7 @@ void InitPlayer(Player *player, Vector2 initial_pos, float speed)
 
     player->position = initial_pos;
     player->speed = speed;
+    player->shoot_timer = 0.0f;
     
     g_health1.next = &g_health2;
     g_health2.next = &g_health3;
@@ -53,7 +52,7 @@ void UpdatePlayer(Player *player, float dt, Bullet *bullets, Sound shoot_sound)
     {
         input.x = -1;
     }
-
+    
     if (IsKeyDown(KEY_LEFT_SHIFT))
     {
         player->speed = FOCUS_SPEED;
@@ -158,4 +157,29 @@ void LoseHealth(Player *player)
     }
 
     player->healths = player->healths->next;
+}
+
+
+void DrawHealths(Player *player)
+{
+    int startX = 1046;
+    int startY = 210;
+    int radius = 17;
+    int spacing = 44;
+
+    int lives = 0;
+    HealthNode *p = player->healths;
+
+    while (p != NULL)
+    {
+        lives += 1;
+        p = p->next;
+    }
+
+    for (int i = 0; i < 4; i += 1) 
+    {
+        Color color = (i < lives) ? RED : DARKGRAY;
+
+        DrawCircle(startX + i * spacing, startY, radius, color);
+    }
 }

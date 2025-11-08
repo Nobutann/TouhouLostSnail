@@ -2,7 +2,9 @@
 #define BULLETS_H
 
 #include "raylib.h"
+
 #define MAX_BULLETS 100
+#define BULLET_SPEED 2000
 
 typedef struct
 {

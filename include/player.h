@@ -4,6 +4,7 @@
 #include "raylib.h"
 #include "sprite.h"
 #include "bullets.h"
+#define BASE_SPEED 1000.0f
 
 typedef struct HealthNode {
     struct HealthNode *next;
@@ -24,6 +25,6 @@ void DrawPlayer(Player *player);
 void UnloadPlayer(Player *player);
 void PlayerShoot(Player *player, Bullet *bullets);
 void LoseHealth(Player *player);
-void DrawHealth(Player *player);
+void DrawHealths(Player *player);
 
 #endif
