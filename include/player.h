@@ -24,5 +24,6 @@ void DrawPlayer(Player *player);
 void UnloadPlayer(Player *player);
 void PlayerShoot(Player *player, Bullet *bullets);
 void LoseHealth(Player *player);
+void DrawHealth(Player *player);
 
 #endif

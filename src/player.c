@@ -4,6 +4,7 @@
 #include "raymath.h"
 #include "sprite.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 #define BULLET_SPEED 2000
 #define FIRE_RATE 0.066f
