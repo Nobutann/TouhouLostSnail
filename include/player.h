@@ -5,7 +5,7 @@
 #include "sprite.h"
 #include "bullets.h"
 
-#define BASE_SPEED 1000.0f
+#define BASE_SPEED 800.0f
 
 typedef struct
 {

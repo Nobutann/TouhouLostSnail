@@ -8,7 +8,11 @@
 #define BULLET_DISTANCE_X 8
 #define BULLET_DISTANCE_Y 20
 #define PLAYER_CENTER 15
-#define FOCUS_SPEED 300.0f
+#define FOCUS_SPEED 500.0f
+#define RIGHT_LIMIT 760
+#define LEFT_LIMIT 15
+#define BOTTOM_LIMIT 715
+#define TOP_LIMIT 5
 
 void InitPlayer(Player *player, Vector2 initial_pos, float speed)
 {
@@ -67,6 +71,23 @@ void UpdatePlayer(Player *player, float dt, Bullet *bullets, Sound shoot_sound)
     player->position.x += input.x * player->speed * dt;
     player->position.y += input.y * player->speed * dt;
 
+    if (player->position.x < LEFT_LIMIT)
+    {
+        player->position.x = LEFT_LIMIT;
+    }
+    if (player->position.x > RIGHT_LIMIT)
+    {
+        player->position.x = RIGHT_LIMIT;
+    }
+    if (player->position.y < TOP_LIMIT)
+    {
+        player->position.y = TOP_LIMIT;
+    }
+    if (player->position.y > BOTTOM_LIMIT)
+    {
+        player->position.y = BOTTOM_LIMIT;
+    }
+
     Animation *anim = &player->sprites.idle;
 
     if (input.x < 0)
@@ -94,7 +115,7 @@ void DrawPlayer(Player *player)
         anim = &player->sprites.fly_right;
     }
 
-    DrawAnimationFrame(anim, player->position, 2.0f, WHITE);
+    DrawAnimationFrame(anim, player->position, 1.5f, WHITE);
 }
 
 void PlayerShoot(Player *player, Bullet *bullets)
