@@ -28,7 +28,7 @@ int main(void)
             UnloadMusicStream(menu_music);
             Player player;
             Bullet bullets[MAX_BULLETS];
-            Vector2 start_pos = {400, 300};
+            Vector2 start_pos = {400, 715};
             Texture2D bullet_sprite = LoadTexture("assets/sprites/bullets/playerbullet.png");
             InitPlayer(&player, start_pos, BASE_SPEED);
             InitBullet(bullets, bullet_sprite);
