@@ -32,7 +32,7 @@ void DrawBullets(Bullet *bullets)
     {
         if (bullets[i].active)
         {
-            Vector2 origin = {bullets[i].sprite.width / 2.0f, bullets[i].sprite.height / 2.0f};
+            Vector2 origin = {bullets[i].sprite.width / 1.0f, bullets[i].sprite.height / 1.0f};
 
             DrawTexturePro
             (
