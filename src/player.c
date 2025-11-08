@@ -157,9 +157,4 @@ void LoseHealth(Player *player)
     }
 
     player->healths = player->healths->next;
-
-    if (player->healths == NULL)
-    {
-        printf("Perdeu sua ultima vida!\n");
-    }
 }
