@@ -3,8 +3,6 @@
 #include "screens.h"
 #include "bullets.h"
 
-#define BASE_SPEED 550.0f
-
 int main(void)
 {
     InitWindow(1280, 800, "Touhou: Lost Snail");

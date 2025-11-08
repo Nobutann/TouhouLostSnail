@@ -4,13 +4,11 @@
 #include "raymath.h"
 #include "sprite.h"
 
-#define BULLET_SPEED 2000
-#define FIRE_RATE 0.066f
+#define FIRE_RATE 0.066f /* 15 tiros por segundo */
 #define BULLET_DISTANCE_X 8
 #define BULLET_DISTANCE_Y 20
 #define PLAYER_CENTER 15
 #define FOCUS_SPEED 300.0f
-#define BASE_SPEED 550.0f
 
 void InitPlayer(Player *player, Vector2 initial_pos, float speed)
 {
