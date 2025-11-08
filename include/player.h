@@ -10,6 +10,10 @@ typedef struct HealthNode {
     struct HealthNode *next;
 } HealthNode;
 
+typedef struct Bombs {
+    struct Bombs *next;
+} Bombs;
+
 typedef struct
 {
     HealthNode *healths;
@@ -17,6 +21,7 @@ typedef struct
     float speed;
     PlayerSprites sprites;
     float shoot_timer;
+    Bombs *bombs;
 } Player;
 
 void InitPlayer(Player *player, Vector2 initial_pos, float speed);
@@ -26,5 +31,7 @@ void UnloadPlayer(Player *player);
 void PlayerShoot(Player *player, Bullet *bullets);
 void LoseHealth(Player *player);
 void DrawHealths(Player *player);
+void LoseBombs(Player *player);
+void DrawBombs(Player *player);
 
 #endif

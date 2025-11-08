@@ -13,6 +13,7 @@
 #define FOCUS_SPEED 300.0f
 
 HealthNode g_health1, g_health2, g_health3, g_health4;
+Bombs g_bomb1, g_bomb2, g_bomb3;
 
 void InitPlayer(Player *player, Vector2 initial_pos, float speed)
 {
@@ -28,6 +29,12 @@ void InitPlayer(Player *player, Vector2 initial_pos, float speed)
     g_health4.next = NULL;
 
     player->healths = &g_health1;
+
+    g_bomb1.next = &g_bomb2;
+    g_bomb2.next = &g_bomb3;
+    g_bomb3.next = NULL;
+
+    player->bombs = &g_bomb1;
 
     LoadPlayerSprites(&player->sprites);
 }
@@ -182,4 +189,42 @@ void DrawHealths(Player *player)
 
         DrawCircle(startX + i * spacing, startY, radius, color);
     }
+}
+
+
+
+void LoseBombs(Player *player)
+{
+    if (player->bombs == NULL)
+    {
+        printf("Não possui mais bombas\n");
+        return;
+    }
+
+    player->bombs = player->bombs->next;
+}
+
+void DrawBombs(Player *player)
+{   
+    int startX = 1010;
+    int startY = 318;
+    int radius = 17;
+    int spacing = 44;
+
+    int bombs = 0;
+    Bombs *b = player->bombs;
+
+    while (b != NULL)
+    {
+        bombs += 1;
+        b = b->next;
+    }
+
+    for (int i = 0; i < 3; i += 1) 
+    {
+        Color color = (i < bombs) ? BLACK : DARKGRAY;
+
+        DrawCircle(startX + i * spacing, startY, radius, color);
+    }
+    
 }

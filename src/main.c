@@ -50,6 +50,7 @@ int main(void)
                 DrawPlayer(&player);
                 DrawBullets(bullets);
                 DrawHealths(&player);
+                DrawBombs(&player);
                 EndDrawing();
             }
 
