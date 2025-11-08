@@ -2,7 +2,7 @@
 #include "player.h"
 #include "screens.h"
 #include "bullets.h"
-
+#include "boss.h"
 int main(void)
 {
     InitWindow(1280, 800, "Touhou: Lost Snail");
@@ -27,10 +27,13 @@ int main(void)
             StopMusicStream(menu_music);
             UnloadMusicStream(menu_music);
             Player player;
+            BOSS boss;
             Bullet bullets[MAX_BULLETS];
-            Vector2 start_pos = {400, 300};
+            Vector2 start_pos = {400, 500};
+            Vector2 start_boss_pos = {300, 200};
             Texture2D bullet_sprite = LoadTexture("assets/sprites/bullets/playerbullet.png");
             InitPlayer(&player, start_pos, BASE_SPEED);
+            InitBoss(&boss, start_boss_pos, BASE_SPEED);
             InitBullet(bullets, bullet_sprite);
             Animation map;
             LoadMapSprites(&map);
@@ -38,7 +41,7 @@ int main(void)
             while (!WindowShouldClose())
             {
                 float dt = GetFrameTime();
-                
+                UpdateBoss(&boss, dt, bullets, shoot_sound);
                 UpdatePlayer(&player, dt, bullets, shoot_sound);
                 UpdateBullets(bullets, dt);
 
@@ -48,11 +51,13 @@ int main(void)
                 DrawAnimationFrame(&map, map_pos, 1.0f, WHITE);
                 UpdateAnimation(&map, dt);
                 DrawPlayer(&player);
+                DrawBoss(&boss);
                 DrawBullets(bullets);
                 EndDrawing();
             }
 
             UnloadPlayer(&player);
+            UnloadBoss(&boss);
             UnloadTexture(bullet_sprite);
             UnloadMapSprites(&map);
         }

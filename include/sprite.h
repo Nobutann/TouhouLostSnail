@@ -21,6 +21,8 @@ typedef struct
 
 void LoadPlayerSprites(PlayerSprites *player_sprites);
 void UnloadPlayerSprites(PlayerSprites *player_sprites);
+void LoadBossSprites(PlayerSprites *player_sprites);
+void UnloadBossSprites(PlayerSprites *player_sprites);
 void UpdateAnimation(Animation *anim, float dt);
 void DrawAnimationFrame(Animation *anim, Vector2 position, float scale, Color tint);
 void LoadMapSprites(Animation *map);
