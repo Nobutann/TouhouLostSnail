@@ -28,8 +28,13 @@ int main(void)
             UnloadMusicStream(menu_music);
             Player player;
             Bullet bullets[MAX_BULLETS];
-            Vector2 start_pos = {400, 715};
+            BombProjectile active_bombs[MAX_ACTIVE_BOMBS];
+            for (int i = 0; i < MAX_ACTIVE_BOMBS; i += 1)
+            {
+                active_bombs[i].active = false;
+            }
             Texture2D bullet_sprite = LoadTexture("assets/sprites/bullets/playerbullet.png");
+            Vector2 start_pos = {400, 715};
             InitPlayer(&player, start_pos, BASE_SPEED);
             InitBullet(bullets, bullet_sprite);
             Animation map;
@@ -39,9 +44,9 @@ int main(void)
             {
                 float dt = GetFrameTime();
                 
-                UpdatePlayer(&player, dt, bullets, shoot_sound);
+                UpdatePlayer(&player, dt, bullets, shoot_sound, active_bombs);
                 UpdateBullets(bullets, dt);
-
+                UpdateBombProjectiles(active_bombs, dt);
                 BeginDrawing();
                 ClearBackground(RAYWHITE);
                 Vector2 map_pos = {0, 0};
@@ -49,6 +54,7 @@ int main(void)
                 UpdateAnimation(&map, dt);
                 DrawPlayer(&player);
                 DrawBullets(bullets);
+                DrawBombProjectiles(active_bombs);
                 DrawHealths(&player);
                 DrawBombs(&player);
                 EndDrawing();

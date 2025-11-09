@@ -26,7 +26,7 @@ typedef struct
 } Player;
 
 void InitPlayer(Player *player, Vector2 initial_pos, float speed);
-void UpdatePlayer(Player *player, float dt, Bullet *bullets, Sound shoot_sound);
+void UpdatePlayer(Player *player, float dt, Bullet *bullets, Sound shoot_sound, BombProjectile *active_bombs);
 void DrawPlayer(Player *player);
 void UnloadPlayer(Player *player);
 void PlayerShoot(Player *player, Bullet *bullets);
@@ -34,5 +34,6 @@ void LoseHealth(Player *player);
 void DrawHealths(Player *player);
 void LoseBombs(Player *player);
 void DrawBombs(Player *player);
+void InitBombProjectiles(BombProjectile *active_bombs, Vector2 startPos, Player *player);
 
 #endif

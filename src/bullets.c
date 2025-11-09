@@ -46,3 +46,30 @@ void DrawBullets(Bullet *bullets)
         }
     }
 }
+
+void UpdateBombProjectiles(BombProjectile *active_bombs, float dt)
+{
+    for (int i = 0; i < MAX_ACTIVE_BOMBS; i += 1)
+    {
+        if (active_bombs[i].active)
+        {
+            active_bombs[i].position.y += active_bombs[i].velocity.y * dt;
+
+            if (active_bombs[i].position.y < -50)
+            {
+                active_bombs[i].active = false;
+            }
+        }
+    }
+}
+
+void DrawBombProjectiles(BombProjectile *active_bombs)
+{
+    for (int i = 0; i < MAX_ACTIVE_BOMBS; i += 1)
+    {
+        if (active_bombs[i].active)
+        {
+            DrawCircleV(active_bombs[i].position, 30, YELLOW);
+        }
+    }
+}

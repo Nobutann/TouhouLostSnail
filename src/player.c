@@ -43,7 +43,7 @@ void InitPlayer(Player *player, Vector2 initial_pos, float speed)
     LoadPlayerSprites(&player->sprites);
 }
 
-void UpdatePlayer(Player *player, float dt, Bullet *bullets, Sound shoot_sound)
+void UpdatePlayer(Player *player, float dt, Bullet *bullets, Sound shoot_sound, BombProjectile *active_bombs)
 {
     Vector2 input = {0, 0};
 
@@ -86,6 +86,15 @@ void UpdatePlayer(Player *player, float dt, Bullet *bullets, Sound shoot_sound)
         PlayerShoot(player, bullets);
         player->shoot_timer = FIRE_RATE;
         PlaySound(shoot_sound);
+    }
+
+    if (IsKeyPressed(KEY_R))
+    {
+        if (player->bombs != NULL)
+        {
+            InitBombProjectiles(active_bombs, player->position, player);
+            LoseBombs(player);
+        }
     }
 
     player->position.x += input.x * player->speed * dt;
@@ -248,4 +257,23 @@ void DrawBombs(Player *player)
         DrawCircle(startX + i * spacing, startY, radius, color);
     }
     
+}
+
+
+void InitBombProjectiles(BombProjectile *active_bombs, Vector2 startPos, Player *player)
+{
+    for (int i = 0; i < MAX_ACTIVE_BOMBS; i += 1)
+    {
+        if (!active_bombs[i].active)
+        {
+            active_bombs[i].active = true;
+            
+            float playerCenterX = player->position.x + player->sprites.idle.frames[0].width / 2.0f;
+            float playerCenterY = player->position.y + player->sprites.idle.frames[0].height / 2.0f;
+            
+            active_bombs[i].position = (Vector2){playerCenterX, playerCenterY - 40};
+            active_bombs[i].velocity = (Vector2){0, -BOMB_SPEED};
+            break;
+        }
+    }
 }
