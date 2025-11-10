@@ -3,6 +3,8 @@
 #include "bullets.h"
 #include "raymath.h"
 #include "sprite.h"
+#include <stdlib.h>
+#include <stdio.h>
 
 #define FIRE_RATE 0.066f /* 15 tiros por segundo */
 #define BULLET_DISTANCE_X 8
@@ -14,16 +16,34 @@
 #define BOTTOM_LIMIT 715
 #define TOP_LIMIT 5
 
+HealthNode g_health1, g_health2, g_health3, g_health4;
+Bombs g_bomb1, g_bomb2, g_bomb3;
+
 void InitPlayer(Player *player, Vector2 initial_pos, float speed)
 {
+    player->healths = NULL;
+
     player->position = initial_pos;
     player->speed = speed;
     player->shoot_timer = 0.0f;
     
+    g_health1.next = &g_health2;
+    g_health2.next = &g_health3;
+    g_health3.next = &g_health4;
+    g_health4.next = NULL;
+
+    player->healths = &g_health1;
+
+    g_bomb1.next = &g_bomb2;
+    g_bomb2.next = &g_bomb3;
+    g_bomb3.next = NULL;
+
+    player->bombs = &g_bomb1;
+
     LoadPlayerSprites(&player->sprites);
 }
 
-void UpdatePlayer(Player *player, float dt, Bullet *bullets, Sound shoot_sound)
+void UpdatePlayer(Player *player, float dt, Bullet *bullets, Sound shoot_sound, BombProjectile *active_bombs)
 {
     Vector2 input = {0, 0};
 
@@ -66,6 +86,15 @@ void UpdatePlayer(Player *player, float dt, Bullet *bullets, Sound shoot_sound)
         PlayerShoot(player, bullets);
         player->shoot_timer = FIRE_RATE;
         PlaySound(shoot_sound);
+    }
+
+    if (IsKeyPressed(KEY_R))
+    {
+        if (player->bombs != NULL)
+        {
+            InitBombProjectiles(active_bombs, player->position, player);
+            LoseBombs(player);
+        }
     }
 
     player->position.x += input.x * player->speed * dt;
@@ -152,4 +181,99 @@ void PlayerShoot(Player *player, Bullet *bullets)
 void UnloadPlayer(Player *player)
 {
     UnloadPlayerSprites(&player->sprites);
+}
+
+
+
+void LoseHealth(Player *player)
+{
+    if (player->healths == NULL) 
+    {   
+        printf("Game Over\n");
+        return;
+    }
+
+    player->healths = player->healths->next;
+}
+
+
+void DrawHealths(Player *player)
+{
+    int startX = 1046;
+    int startY = 210;
+    int radius = 17;
+    int spacing = 44;
+
+    int lives = 0;
+    HealthNode *p = player->healths;
+
+    while (p != NULL)
+    {
+        lives += 1;
+        p = p->next;
+    }
+
+    for (int i = 0; i < 4; i += 1) 
+    {
+        Color color = (i < lives) ? RED : DARKGRAY;
+
+        DrawCircle(startX + i * spacing, startY, radius, color);
+    }
+}
+
+
+
+void LoseBombs(Player *player)
+{
+    if (player->bombs == NULL)
+    {
+        printf("Não possui mais bombas\n");
+        return;
+    }
+
+    player->bombs = player->bombs->next;
+}
+
+void DrawBombs(Player *player)
+{   
+    int startX = 1016;
+    int startY = 318;
+    int radius = 17;
+    int spacing = 44;
+
+    int bombs = 0;
+    Bombs *b = player->bombs;
+
+    while (b != NULL)
+    {
+        bombs += 1;
+        b = b->next;
+    }
+
+    for (int i = 0; i < 3; i += 1) 
+    {
+        Color color = (i < bombs) ? BLACK : DARKGRAY;
+
+        DrawCircle(startX + i * spacing, startY, radius, color);
+    }
+    
+}
+
+
+void InitBombProjectiles(BombProjectile *active_bombs, Vector2 startPos, Player *player)
+{
+    for (int i = 0; i < MAX_ACTIVE_BOMBS; i += 1)
+    {
+        if (!active_bombs[i].active)
+        {
+            active_bombs[i].active = true;
+            
+            float playerCenterX = player->position.x + player->sprites.idle.frames[0].width / 2.0f;
+            float playerCenterY = player->position.y + player->sprites.idle.frames[0].height / 2.0f;
+            
+            active_bombs[i].position = (Vector2){playerCenterX, playerCenterY - 40};
+            active_bombs[i].velocity = (Vector2){0, -BOMB_SPEED};
+            break;
+        }
+    }
 }
