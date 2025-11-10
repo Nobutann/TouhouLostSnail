@@ -19,6 +19,14 @@ typedef struct
     Animation fly_right;
 } PlayerSprites;
 
+typedef struct
+{
+    Animation idle;
+    Animation attack;
+    Animation spell_card;
+} BossSprites;
+
+
 void LoadPlayerSprites(PlayerSprites *player_sprites);
 void UnloadPlayerSprites(PlayerSprites *player_sprites);
 void UpdateAnimation(Animation *anim, float dt);

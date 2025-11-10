@@ -2,6 +2,7 @@
 #include "player.h"
 #include "screens.h"
 #include "bullets.h"
+#include "boss.h"
 
 int main(void)
 {
@@ -28,6 +29,8 @@ int main(void)
             UnloadMusicStream(menu_music);
             Player player;
             Bullet bullets[MAX_BULLETS];
+            Boss flandre;
+            EnemyBullet enemy_bullets[MAX_ENEMY_BULLETS];
             BombProjectile active_bombs[MAX_ACTIVE_BOMBS];
             for (int i = 0; i < MAX_ACTIVE_BOMBS; i += 1)
             {
@@ -36,7 +39,9 @@ int main(void)
             Texture2D bullet_sprite = LoadTexture("assets/sprites/bullets/playerbullet.png");
             Vector2 start_pos = {400, 715};
             InitPlayer(&player, start_pos, BASE_SPEED);
+            InitBoss(&flandre, (Vector2){400, 100});
             InitBullet(bullets, bullet_sprite);
+            InitEnemyBullets(enemy_bullets);
             Animation map;
             LoadMapSprites(&map);
 
@@ -45,7 +50,9 @@ int main(void)
                 float dt = GetFrameTime();
                 
                 UpdatePlayer(&player, dt, bullets, shoot_sound, active_bombs);
+                UpdateBoss(&flandre, dt, enemy_bullets, player.position);
                 UpdateBullets(bullets, dt);
+                UpdateEnemyBullets(enemy_bullets, dt);
                 UpdateBombProjectiles(active_bombs, dt);
                 BeginDrawing();
                 ClearBackground(RAYWHITE);
@@ -53,6 +60,8 @@ int main(void)
                 DrawAnimationFrame(&map, map_pos, 1.0f, WHITE);
                 UpdateAnimation(&map, dt);
                 DrawPlayer(&player);
+                DrawBoss(&flandre);
+                DrawEnemyBullets(enemy_bullets);
                 DrawBullets(bullets);
                 DrawBombProjectiles(active_bombs);
                 DrawHealths(&player);
@@ -61,6 +70,7 @@ int main(void)
             }
 
             UnloadPlayer(&player);
+            UnloadBoss(&flandre);
             UnloadTexture(bullet_sprite);
             UnloadMapSprites(&map);
         }
