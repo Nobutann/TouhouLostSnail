@@ -26,6 +26,14 @@ typedef struct
     Animation spell_card;
 } BossSprites;
 
+typedef struct
+{
+    Texture2D bullet_red;
+    Texture2D bullet_pink;
+    Texture2D bullet_orange;
+    Texture2D bullet_yellow_glow;
+    Texture2D bullet_blue_outline;
+} BossAssets;
 
 void LoadPlayerSprites(PlayerSprites *player_sprites);
 void UnloadPlayerSprites(PlayerSprites *player_sprites);

@@ -20,7 +20,7 @@ void InitBoss(Boss *boss, Vector2 initial_pos)
     boss->is_moving = false;
 }
 
-void NonSpell1(Boss *boss, EnemyBullet *enemy_bullets, Vector2 player_pos)
+void NonSpell1(Boss *boss, EnemyBullet *enemy_bullets, Vector2 player_pos, BossAssets *assets)
 {
     boss->frame_counter++;
 

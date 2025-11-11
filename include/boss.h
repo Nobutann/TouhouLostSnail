@@ -38,6 +38,6 @@ void UpdateBoss(Boss *boss, float dt, EnemyBullet *enemy_bullets, Vector2 player
 void DrawBoss(Boss *boss);
 void UnloadBoss(Boss *boss);
 
-void NonSpell1(Boss *boss, EnemyBullet *enemy_bullets, Vector2 player_pos);
+void NonSpell1(Boss *boss, EnemyBullet *enemy_bullets, Vector2 player_pos, BossAssets *assets)
 
 #endif

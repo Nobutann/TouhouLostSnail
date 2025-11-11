@@ -83,7 +83,7 @@ void InitEnemyBullets(EnemyBullet *bullets)
     }
 }
 
-void SpawnEnemyBullet(EnemyBullet *bullets, Vector2 position, float angle, float speed, EnemyBulletType type, Texture2D *sprite)
+void SpawnEnemyBullet(EnemyBullet *bullets, Vector2 position, float angle, float speed, EnemyBulletType type, Texture2D sprite)
 {
     for (int i = 0; i < MAX_ENEMY_BULLETS; i++)
     {
@@ -128,7 +128,13 @@ void DrawEnemyBullets(EnemyBullet *bullets)
     {
         if (bullets[i].active)
         {
-            DrawCircleV(bullets[i].position, bullets[i].radius, WHITE);
+            Vector2 draw_pos =
+            {
+                bullets[i].position.x - (bullets[i].sprite.width / 2.0f),
+                bullets[i].position.y - (bullets[i].sprite.height / 2.0f)
+            };
+
+            DrawTextureEx(bullets[i].sprite, draw_pos, 0.0f, 1.0f, WHITE);
         }
     }
 }

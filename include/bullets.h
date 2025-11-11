@@ -40,7 +40,7 @@ typedef struct
     float angle;
     float speed;
     EnemyBulletType type;
-    Texture2D *sprite;
+    Texture2D sprite;
     float lifetime;
     bool active;
     float radius;
@@ -54,7 +54,7 @@ void UpdateBombProjectiles(BombProjectile *active_bombs, float dt);
 void DrawBombProjectiles(BombProjectile *active_bombs);
 
 void InitEnemyBullets(EnemyBullet *bullets);
-void SpawnEnemyBullet(EnemyBullet *bullets, Vector2 position, float angle, float speed, EnemyBulletType type, Texture2D *sprite);
+void SpawnEnemyBullet(EnemyBullet *bullets, Vector2 position, float angle, float speed, EnemyBulletType type, Texture2D sprite);
 void UpdateEnemyBullets(EnemyBullet *bullets, float dt);
 void DrawEnemyBullets(EnemyBullet *bullets);
 
