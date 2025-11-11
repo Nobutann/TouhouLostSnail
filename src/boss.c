@@ -46,8 +46,16 @@ void NonSpell1(Boss *boss, EnemyBullet *enemy_bullets, Vector2 player_pos, BossA
         {
             float angle = (float)(rand() % 360) * DEG2RAD;
             float speed = 180.0f + (rand() % 100);
-            Texture2D *sprite;
-            SpawnEnemyBullet(enemy_bullets, boss->position, angle, speed, BULLET_TYPE_NORMAL, sprite);
+
+            Texture2D random_sprites[] =
+            {
+                assets->bullet_red,
+                assets->bullet_pink,
+                assets->bullet_orange
+            };
+            Texture2D chosen = random_sprites[rand() % 3];
+
+            SpawnEnemyBullet(enemy_bullets, boss->position, angle, speed, BULLET_TYPE_NORMAL, chosen);
         }
     }
 
@@ -64,8 +72,7 @@ void NonSpell1(Boss *boss, EnemyBullet *enemy_bullets, Vector2 player_pos, BossA
             float angle = base_angle + spread_angles[i];
             float speed = 320.0f;
 
-            Texture2D *sprite;
-            SpawnEnemyBullet(enemy_bullets, boss->position, angle, speed, BULLET_TYPE_AIMED, sprite);
+            SpawnEnemyBullet(enemy_bullets, boss->position, angle, speed, BULLET_TYPE_AIMED, assets->bullet_yellow_glow);
         }
     }
 
@@ -80,18 +87,17 @@ void NonSpell1(Boss *boss, EnemyBullet *enemy_bullets, Vector2 player_pos, BossA
             float angle = (angle_step * i) + base_rotation;
             float speed = 140.0f;
 
-            Texture2D *sprite;
-            SpawnEnemyBullet(enemy_bullets, boss->position, angle, speed, BULLET_TYPE_NORMAL, sprite);
+            SpawnEnemyBullet(enemy_bullets, boss->position, angle, speed, BULLET_TYPE_NORMAL, assets->bullet_blue_outline);
         }
     }
 }
 
-void UpdateBoss(Boss *boss, float dt, EnemyBullet *enemy_bullets, Vector2 player_pos)
+void UpdateBoss(Boss *boss, float dt, EnemyBullet *enemy_bullets, Vector2 player_pos, BossAssets *assets)
 {
     switch (boss->current_phase)
     {
         case BOSS_PHASE_NONSPELL1:
-            NonSpell1(boss, enemy_bullets, player_pos);
+            NonSpell1(boss, enemy_bullets, player_pos, assets);
 
             if (boss->health <= 0)
             {

@@ -34,10 +34,10 @@ typedef struct
 } Boss;
 
 void InitBoss(Boss *boss, Vector2 initial_pos);
-void UpdateBoss(Boss *boss, float dt, EnemyBullet *enemy_bullets, Vector2 player_pos);
+void UpdateBoss(Boss *boss, float dt, EnemyBullet *enemy_bullets, Vector2 player_pos, BossAssets *assets);
 void DrawBoss(Boss *boss);
 void UnloadBoss(Boss *boss);
 
-void NonSpell1(Boss *boss, EnemyBullet *enemy_bullets, Vector2 player_pos, BossAssets *assets)
+void NonSpell1(Boss *boss, EnemyBullet *enemy_bullets, Vector2 player_pos, BossAssets *assets);
 
 #endif
