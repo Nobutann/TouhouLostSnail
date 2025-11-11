@@ -22,8 +22,7 @@ typedef struct
 typedef struct
 {
     Animation idle;
-    Animation attack;
-    Animation spell_card;
+    Animation direction;
 } BossSprites;
 
 typedef struct
@@ -37,8 +36,13 @@ typedef struct
 
 void LoadPlayerSprites(PlayerSprites *player_sprites);
 void UnloadPlayerSprites(PlayerSprites *player_sprites);
+
+void LoadBossSprites(BossSprites *boss_sprites);
+void UnloadBossSprites(BossSprites *boss_sprites);
+
 void UpdateAnimation(Animation *anim, float dt);
 void DrawAnimationFrame(Animation *anim, Vector2 position, float scale, Color tint);
+
 void LoadMapSprites(Animation *map);
 void UnloadMapSprites(Animation *map);
 

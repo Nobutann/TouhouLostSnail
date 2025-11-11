@@ -80,6 +80,43 @@ void UnloadPlayerSprites(PlayerSprites *player_sprites)
     UnloadTextureArray(player_sprites->fly_left.frames, player_sprites->fly_left.frame_count);
 }
 
+void LoadBossSprites(BossSprites *boss_sprites)
+{
+    const char *idlepath[] = 
+    {
+        "assets/sprites/flandre/flandreidle/flandreidle1.png",
+        "assets/sprites/flandre/flandreidle/flandreidle2.png",
+        "assets/sprites/flandre/flandreidle/flandreidle3.png",
+        "assets/sprites/flandre/flandreidle/flandreidle4.png",
+    };
+
+    int idle_frame_count = sizeof(idlepath) / sizeof(idlepath[0]);
+    boss_sprites->idle.frames = LoadTextureArray(idlepath, idle_frame_count);
+    boss_sprites->idle.frame_count = idle_frame_count;
+    boss_sprites->idle.frame_time = 0.1f;
+    boss_sprites->idle.current_frame = 0;
+    boss_sprites->idle.timer = 0.0f;
+
+    const char *directionpath[] = 
+    {
+        "assets/sprites/flandre/flandredirection/flandredirection1.png",
+        "assets/sprites/flandre/flandredirection/flandredirection2.png",
+    };
+
+    int direction_frame_count = sizeof(directionpath) / sizeof(directionpath[0]);
+    boss_sprites->direction.frames = LoadTextureArray(directionpath, direction_frame_count);
+    boss_sprites->direction.frame_count = direction_frame_count;
+    boss_sprites->direction.frame_time = 0.12f;
+    boss_sprites->direction.current_frame = 0;
+    boss_sprites->direction.timer = 0.0f;
+}
+
+void UnloadBossSprites(BossSprites *boss_sprites)
+{
+    UnloadTextureArray(boss_sprites->idle.frames, boss_sprites->idle.frame_count);
+    UnloadTextureArray(boss_sprites->direction.frames, boss_sprites->direction.frame_count);
+}
+
 void LoadMapSprites(Animation *map)
 {
     const char *mappath[] = 

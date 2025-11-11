@@ -93,7 +93,7 @@ void SpawnEnemyBullet(EnemyBullet *bullets, Vector2 position, float angle, float
             bullets[i].angle = angle;
             bullets[i].speed = speed;
             bullets[i].velocity.x = cosf(angle) * speed;
-            bullets[i].velocity.y = sinf(angle * speed);
+            bullets[i].velocity.y = sinf(angle) * speed;
             bullets[i].type = type;
             bullets[i].active = true;
             bullets[i].sprite = sprite;

@@ -24,6 +24,7 @@ typedef struct
 {
     Vector2 position;
     Vector2 target_position;
+    Vector2 last_position;
     float health;
     float max_health;
     BossPhase current_phase;

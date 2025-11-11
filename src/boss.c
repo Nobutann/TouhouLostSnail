@@ -12,12 +12,15 @@ void InitBoss(Boss *boss, Vector2 initial_pos)
 {
     boss->position = initial_pos;
     boss->target_position = initial_pos;
+    boss->last_position = initial_pos;
     boss->health = BOSS_HEALTH_NONSPELL1;
     boss->max_health = BOSS_HEALTH_NONSPELL1;
     boss->current_phase = BOSS_PHASE_NONSPELL1;
     boss->frame_counter = 0;
     boss->move_timer = 0.0f;
     boss->is_moving = false;
+
+    LoadBossSprites(&boss->sprites);
 }
 
 void NonSpell1(Boss *boss, EnemyBullet *enemy_bullets, Vector2 player_pos, BossAssets *assets)
@@ -94,6 +97,8 @@ void NonSpell1(Boss *boss, EnemyBullet *enemy_bullets, Vector2 player_pos, BossA
 
 void UpdateBoss(Boss *boss, float dt, EnemyBullet *enemy_bullets, Vector2 player_pos, BossAssets *assets)
 {
+    boss->last_position = boss->position;
+
     switch (boss->current_phase)
     {
         case BOSS_PHASE_NONSPELL1:
@@ -110,6 +115,60 @@ void UpdateBoss(Boss *boss, float dt, EnemyBullet *enemy_bullets, Vector2 player
 
 void DrawBoss(Boss *boss)
 {
+    float dx = boss->position.x - boss->last_position.x;
+    float threshold = 0.5f;
+
+    Animation *current_anim = &boss->sprites.idle;
+    bool flip_horizontal = false;
+
+    if (fabs(dx) > threshold)
+    {
+        current_anim = &boss->sprites.direction;
+
+        if (dx < 0)
+        {
+            flip_horizontal = true;
+        }
+    }
+
+    UpdateAnimation(current_anim, GetFrameTime());
+
+    Vector2 draw_pos = 
+    {
+        boss->position.x - (current_anim->frames[current_anim->current_frame].width / 2.0f),
+        boss->position.y - (current_anim->frames[current_anim->current_frame].height / 2.0f)
+    };
+
+    if (flip_horizontal)
+    {
+        Rectangle source = 
+        {
+            0,
+            0,
+            (float)-current_anim->frames[current_anim->current_frame].width,
+            (float)current_anim->frames[current_anim->current_frame].height
+        };
+
+        Rectangle dest = 
+        {
+            boss->position.x,
+            draw_pos.y,
+            (float)current_anim->frames[current_anim->current_frame].width,
+            (float)current_anim->frames[current_anim->current_frame].height
+        };
+
+        Vector2 origin = 
+        {
+            (float)current_anim->frames[current_anim->current_frame].width / 2.0f, 0
+        };
+
+        DrawTexturePro(current_anim->frames[current_anim->current_frame], source, dest, origin, 0.0f, WHITE);
+    }
+    else
+    {
+        DrawTextureEx(current_anim->frames[current_anim->current_frame], draw_pos, 0.0f, 1.0f, WHITE);
+    }
+
     float bar_width = 400.0f;
     float bar_height = 20.0f;
     float bar_x = 200.0f;
@@ -124,5 +183,5 @@ void DrawBoss(Boss *boss)
 
 void UnloadBoss(Boss *boss)
 {
-    //ja ja
+    UnloadBossSprites(&boss->sprites);
 }
