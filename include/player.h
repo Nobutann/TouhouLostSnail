@@ -6,6 +6,7 @@
 #include "bullets.h"
 
 #define BASE_SPEED 800.0f
+#define HITBOX_RADIUS 3.0f
 
 typedef struct HealthNode {
     struct HealthNode *next;
@@ -21,8 +22,11 @@ typedef struct
     Vector2 position;
     float speed;
     PlayerSprites sprites;
+    Vector2 hitbox_center;
     float shoot_timer;
     Bombs *bombs;
+    bool is_invulnerable;
+    float invul_timer;
 } Player;
 
 void InitPlayer(Player *player, Vector2 initial_pos, float speed);

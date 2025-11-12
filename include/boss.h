@@ -4,8 +4,12 @@
 #include "raylib.h"
 #include "sprite.h"
 #include "bullets.h"
+#include "player.h"
 
 #define BOSS_HEALTH_NONSPELL1 3000.0f
+#define BOSS_HITBOX_RADIUS 20.0f
+#define PLAYER_BULLET_DAMAGE 10.0f
+#define INVULNERABILITY_TIME 3.0f
 
 typedef enum
 {
@@ -38,6 +42,9 @@ void InitBoss(Boss *boss, Vector2 initial_pos);
 void UpdateBoss(Boss *boss, float dt, EnemyBullet *enemy_bullets, Vector2 player_pos, BossAssets *assets);
 void DrawBoss(Boss *boss);
 void UnloadBoss(Boss *boss);
+
+void CheckPlayerVsBoss(Boss *boss, Bullet *player_bullets);
+void CheckBossVsPlayer(Player *player, EnemyBullet *enemy_bullets);
 
 void NonSpell1(Boss *boss, EnemyBullet *enemy_bullets, Vector2 player_pos, BossAssets *assets);
 

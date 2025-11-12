@@ -26,6 +26,8 @@ void InitPlayer(Player *player, Vector2 initial_pos, float speed)
     player->position = initial_pos;
     player->speed = speed;
     player->shoot_timer = 0.0f;
+    player->is_invulnerable = false;
+    player->invul_timer = 0.0f;
     
     g_health1.next = &g_health2;
     g_health2.next = &g_health3;
@@ -45,6 +47,16 @@ void InitPlayer(Player *player, Vector2 initial_pos, float speed)
 
 void UpdatePlayer(Player *player, float dt, Bullet *bullets, Sound shoot_sound, BombProjectile *active_bombs)
 {
+    if (player->is_invulnerable)
+    {
+        player->invul_timer -= dt;
+        if (player->invul_timer <= 0.0f)
+        {
+            player->is_invulnerable = false;
+            player->invul_timer = 0.0f;
+        }
+    }
+
     Vector2 input = {0, 0};
 
     if (IsKeyDown(KEY_UP))
@@ -144,7 +156,28 @@ void DrawPlayer(Player *player)
         anim = &player->sprites.fly_right;
     }
 
-    DrawAnimationFrame(anim, player->position, 1.5f, WHITE);
+    if (player->is_invulnerable)
+    {
+        int blink = (int)(player->invul_timer * 10) % 2;
+        if (blink == 0)
+        {
+            DrawAnimationFrame(anim, player->position, 1.5f, WHITE);
+        }
+    }
+    else
+    {
+        DrawAnimationFrame(anim, player->position, 1.5f, WHITE);
+    }
+
+    if (IsKeyDown(KEY_LEFT_SHIFT))
+    {
+        Vector2 hitbox_center = 
+        {
+            player->position.x + (player->sprites.idle.frames[0].width / 2.0f),
+            player->position.y + (player->sprites.idle.frames[0].height / 2.0f)
+        };
+        DrawCircleV(hitbox_center, HITBOX_RADIUS, (Color){255, 0, 0, 150});
+    }
 }
 
 void PlayerShoot(Player *player, Bullet *bullets)

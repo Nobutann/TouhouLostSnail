@@ -73,6 +73,10 @@ int main(void)
                 UpdateBullets(bullets, dt);
                 UpdateEnemyBullets(enemy_bullets, dt);
                 UpdateBombProjectiles(active_bombs, dt);
+                
+                CheckPlayerVsBoss(&flandre, bullets);
+                CheckBossVsPlayer(&player, enemy_bullets);
+                
                 BeginDrawing();
                 ClearBackground(RAYWHITE);
                 Vector2 map_pos = {0, 0};

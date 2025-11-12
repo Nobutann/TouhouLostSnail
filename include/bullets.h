@@ -8,6 +8,7 @@
 #define MAX_ACTIVE_BOMBS 3
 #define BOMB_SPEED 1200
 #define MAX_ENEMY_BULLETS 300
+#define PLAYER_BULLET_HITBOX 8.0f
 
 
 typedef struct

@@ -181,6 +181,62 @@ void DrawBoss(Boss *boss)
     DrawRectangleLines(bar_x, bar_y, bar_width, bar_height, BLACK);
 }
 
+void CheckPlayerVsBoss(Boss *boss, Bullet *player_bullets)
+{
+    for (int i = 0; i < MAX_BULLETS; i++)
+    {
+        if (player_bullets[i].active)
+        {
+            Vector2 bullet_pos = player_bullets[i].position;
+
+            if (CheckCollisionCircles(bullet_pos, PLAYER_BULLET_HITBOX, boss->position, BOSS_HITBOX_RADIUS))
+            {
+                boss->health -= PLAYER_BULLET_DAMAGE;
+                player_bullets[i].active = false;
+
+                if (boss->health < 0)
+                {
+                    boss->health = 0;
+                }
+            }
+        }
+    }
+}
+
+void CheckBossVsPlayer(Player *player, EnemyBullet *enemy_bullets)
+{
+    if (player->is_invulnerable)
+    {
+        return;
+    }
+
+    Vector2 player_center = 
+    {
+        player->position.x + (player->sprites.idle.frames[0].width / 2.0f),
+        player->position.y + (player->sprites.idle.frames[0].height / 2.0f)
+    };
+
+    for (int i = 0; i < MAX_ENEMY_BULLETS; i++)
+    {
+        if (enemy_bullets[i].active)
+        {
+            if (CheckCollisionCircles(player_center, HITBOX_RADIUS, enemy_bullets[i].position, enemy_bullets[i].radius))
+            {
+                LoseHealth(player);
+
+                player->is_invulnerable = true;
+                player->invul_timer = INVULNERABILITY_TIME;
+
+                for (int j = 0; j < MAX_ENEMY_BULLETS; j++)
+                {
+                    enemy_bullets[j].active = false;
+                }
+
+                return;
+            }
+        }
+    }
+}
 void UnloadBoss(Boss *boss)
 {
     UnloadBossSprites(&boss->sprites);
