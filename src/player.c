@@ -10,7 +10,7 @@
 #define BULLET_DISTANCE_X 8
 #define BULLET_DISTANCE_Y 20
 #define PLAYER_CENTER 15
-#define FOCUS_SPEED 500.0f
+#define FOCUS_SPEED 350.0f
 #define RIGHT_LIMIT 760
 #define LEFT_LIMIT 15
 #define BOTTOM_LIMIT 715
@@ -173,10 +173,10 @@ void DrawPlayer(Player *player)
     {
         Vector2 hitbox_center = 
         {
-            player->position.x + (player->sprites.idle.frames[0].width / 2.0f),
-            player->position.y + (player->sprites.idle.frames[0].height / 2.0f)
+            player->position.x + (player->sprites.idle.frames[0].width / 1.35f),
+            player->position.y + (player->sprites.idle.frames[0].height / 1.35f)
         };
-        DrawCircleV(hitbox_center, HITBOX_RADIUS, (Color){255, 0, 0, 150});
+        DrawCircleV(hitbox_center, HITBOX_RADIUS, WHITE);
     }
 }
 
