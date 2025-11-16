@@ -19,6 +19,7 @@ void InitBoss(Boss *boss, Vector2 initial_pos)
     boss->frame_counter = 0;
     boss->move_timer = 0.0f;
     boss->is_moving = false;
+    boss->justChangedPhase = false;
 
     LoadBossSprites(&boss->sprites);
 }
@@ -163,6 +164,7 @@ void UpdateBoss(Boss *boss, float dt, EnemyBullet *enemy_bullets, Vector2 player
                 boss->frame_counter = 0;
                 boss->health = BOSS_HEALTH_SPELL1;
                 boss->max_health = BOSS_HEALTH_SPELL1;
+                boss->justChangedPhase = true;
             }
             break;
 
@@ -173,6 +175,7 @@ void UpdateBoss(Boss *boss, float dt, EnemyBullet *enemy_bullets, Vector2 player
             {
                 boss->current_phase = BOSS_PHASE_NONSPELL2;
                 boss->frame_counter = 0;
+                boss->justChangedPhase = true;
             }
             break;
     }
@@ -281,7 +284,7 @@ void CheckPlayerVsBoss(Boss *boss, Bullet *player_bullets)
     }
 }
 
-void CheckBossVsPlayer(Player *player, EnemyBullet *enemy_bullets)
+void CheckBossVsPlayer(Player *player, EnemyBullet *enemy_bullets, int *currentScore)
 {
     if (player->is_invulnerable)
     {
@@ -298,7 +301,19 @@ void CheckBossVsPlayer(Player *player, EnemyBullet *enemy_bullets)
     {
         if (enemy_bullets[i].active)
         {
-            if (CheckCollisionCircles(player_center, HITBOX_RADIUS, enemy_bullets[i].position, enemy_bullets[i].radius))
+            float collisionDistance = HITBOX_RADIUS + enemy_bullets[i].radius;
+            float grazeDistance = collisionDistance + 3.0f; 
+            
+            float dist = Vector2Distance(player_center, enemy_bullets[i].position);
+
+            if (dist < grazeDistance && dist >= collisionDistance && !enemy_bullets[i].hasBeenGrazed)
+            {
+                *currentScore += 150; 
+                enemy_bullets[i].hasBeenGrazed = true; 
+                
+            }
+
+            if (dist < collisionDistance)
             {
                 LoseHealth(player);
 
@@ -310,7 +325,7 @@ void CheckBossVsPlayer(Player *player, EnemyBullet *enemy_bullets)
                     enemy_bullets[j].active = false;
                 }
 
-                return;
+                return; 
             }
         }
     }

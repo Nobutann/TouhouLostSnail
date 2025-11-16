@@ -45,6 +45,7 @@ typedef struct
     float lifetime;
     bool active;
     float radius;
+    bool hasBeenGrazed;
 } EnemyBullet;
 
 void InitBullet(Bullet *bullets, Texture2D sprite);

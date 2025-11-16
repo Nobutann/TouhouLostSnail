@@ -3,6 +3,32 @@
 #include "screens.h"
 #include "bullets.h"
 #include "boss.h"
+#include <stdio.h> 
+
+
+#define HIGHSCORE_FILE "highscore.txt"
+
+int LoadHighScore()
+{
+    int highScore = 0;
+    FILE *file = fopen(HIGHSCORE_FILE, "r");
+    if (file == NULL) return 0;
+    fscanf(file, "%d", &highScore);
+    fclose(file);
+    return highScore;
+}
+
+void SaveHighScore(int score)
+{
+    FILE *file = fopen(HIGHSCORE_FILE, "w");
+    if (file == NULL)
+    {
+        printf("ERRO: Não foi possível salvar o high score!\n");
+        return;
+    }
+    fprintf(file, "%d", score);
+    fclose(file);
+}
 
 
 int main(void)
@@ -34,6 +60,12 @@ int main(void)
             int selected = 0;
 
             StopMusicStream(menu_music);
+
+            int currentScore = 0;
+            int highScore = LoadHighScore();
+            float scoreTimer = 0.0f;
+            float scoreInterval = 0.1f; 
+            int pointsPerInterval = 10; 
 
             Player player;
             Bullet bullets[MAX_BULLETS];
@@ -124,6 +156,18 @@ int main(void)
 
                 if (!is_paused)
                 {
+                    scoreTimer += dt;
+                    if (scoreTimer >= scoreInterval)
+                    {
+                        currentScore += pointsPerInterval;
+                        scoreTimer -= scoreInterval; 
+                    }
+                    
+                    if (currentScore > highScore)
+                    {
+                        highScore = currentScore;
+                    }
+
                     UpdatePlayer(&player, dt, bullets, shoot_sound, active_bombs);
                     UpdateBoss(&flandre, dt, enemy_bullets, player.position, &boss_assets);
                     UpdateBullets(bullets, dt);
@@ -149,6 +193,13 @@ int main(void)
                     DrawBombProjectiles(active_bombs);
                     DrawHealths(&player);
                     DrawBombs(&player);
+
+                    DrawText(TextFormat("SCORE: %010d", currentScore), 
+                             850, 20, 30, WHITE);
+                    
+                    DrawText(TextFormat("HIGH:  %010d", highScore), 
+                             850, 60, 30, LIGHTGRAY);
+
                     if (is_paused)
                     {
                         Vector2 menu_pos;
@@ -170,6 +221,8 @@ int main(void)
                     }
                 EndDrawing();
             }
+
+            SaveHighScore(highScore);
 
             UnloadPlayer(&player);
             UnloadBoss(&flandre);

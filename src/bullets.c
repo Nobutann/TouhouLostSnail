@@ -88,6 +88,7 @@ void SpawnEnemyBullet(EnemyBullet *bullets, Vector2 position, float angle, float
             bullets[i].active = true;
             bullets[i].sprite = sprite;
             bullets[i].lifetime = 0.0f;
+            bullets[i].hasBeenGrazed = false;
             break;
         }
     }
