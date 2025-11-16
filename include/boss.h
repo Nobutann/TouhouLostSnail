@@ -7,6 +7,7 @@
 #include "player.h"
 
 #define BOSS_HEALTH_NONSPELL1 3000.0f
+#define BOSS_HEALTH_SPELL1 4500.0f
 #define BOSS_HITBOX_RADIUS 20.0f
 #define PLAYER_BULLET_DAMAGE 10.0f
 #define INVULNERABILITY_TIME 3.0f
@@ -47,5 +48,6 @@ void CheckPlayerVsBoss(Boss *boss, Bullet *player_bullets);
 void CheckBossVsPlayer(Player *player, EnemyBullet *enemy_bullets);
 
 void NonSpell1(Boss *boss, EnemyBullet *enemy_bullets, Vector2 player_pos, BossAssets *assets);
+void SpellCard1(Boss *boss, EnemyBullet *enemy_bullets, Vector2 player_pos, BossAssets *assets);
 
 #endif

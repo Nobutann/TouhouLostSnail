@@ -95,6 +95,59 @@ void NonSpell1(Boss *boss, EnemyBullet *enemy_bullets, Vector2 player_pos, BossA
     }
 }
 
+void SpellCard1(Boss *boss, EnemyBullet *enemy_bullets, Vector2 player_pos, BossAssets *assets)
+{
+    boss->frame_counter++;
+    
+    boss->target_position.x = 400.0f;
+    boss->target_position.y = 150.0f;
+
+    float move_speed = 100.0f * GetFrameTime();
+    boss->position.x += (boss->target_position.x - boss->position.x) * move_speed * 0.1f;
+    boss->position.y += (boss->target_position.y - boss->position.y) * move_speed * 0.1f;
+
+    if (boss->frame_counter % 3 == 0)
+    {
+        float base_rotation = (boss->frame_counter * 0.05);
+
+        float directions[4] = {0.0f, PI / 2.0f, PI, 3.0f * PI / 2.0f};
+
+        Texture2D colors[4] = 
+        {
+            assets->bullet_red,
+            assets->bullet_blue_solid,
+            assets->bullet_pink,
+            assets->bullet_yellow_glow
+        };
+
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                float angle = directions[i] + base_rotation + (j * 0.15f);
+
+                float speed = 200.0f + (j * 30.0f);
+
+                SpawnEnemyBullet(enemy_bullets, boss->position, angle, speed, BULLET_TYPE_NORMAL, colors[i]);
+            }
+        }
+    }
+
+    if (boss->frame_counter % 60 == 0)
+    {
+        int wave_count = 20;
+        float angle_step = (2.0f * PI) / wave_count;
+
+        for (int i = 0; i < wave_count; i++)
+        {
+            float angle = angle_step * i;
+            float speed = 120.0f;
+
+            SpawnEnemyBullet(enemy_bullets, boss->position, angle, speed, BULLET_TYPE_NORMAL, assets->bullet_orange);
+        }
+    }
+}
+
 void UpdateBoss(Boss *boss, float dt, EnemyBullet *enemy_bullets, Vector2 player_pos, BossAssets *assets)
 {
     boss->last_position = boss->position;
@@ -107,6 +160,18 @@ void UpdateBoss(Boss *boss, float dt, EnemyBullet *enemy_bullets, Vector2 player
             if (boss->health <= 0)
             {
                 boss->current_phase = BOSS_PHASE_SPELL1;
+                boss->frame_counter = 0;
+                boss->health = BOSS_HEALTH_SPELL1;
+                boss->max_health = BOSS_HEALTH_SPELL1;
+            }
+            break;
+
+        case BOSS_PHASE_SPELL1:
+            SpellCard1(boss, enemy_bullets, player_pos, assets);
+
+            if (boss->health <= 0)
+            {
+                boss->current_phase = BOSS_PHASE_NONSPELL2;
                 boss->frame_counter = 0;
             }
             break;
@@ -176,9 +241,22 @@ void DrawBoss(Boss *boss)
 
     DrawRectangle(bar_x, bar_y, bar_width, bar_height, DARKGRAY);
     float health_percent = boss->health / boss->max_health;
-    DrawRectangle(bar_x, bar_y, bar_width * health_percent, bar_height, PURPLE);
+
+    Color bar_color = PURPLE;
+    if (boss->current_phase == BOSS_PHASE_SPELL1 || boss->current_phase == BOSS_PHASE_SPELL2 || boss->current_phase == BOSS_PHASE_SPELL3 || boss->current_phase == BOSS_PHASE_SPELL4)
+    {
+        bar_color = GOLD;
+    }
+    DrawRectangle(bar_x, bar_y, bar_width * health_percent, bar_height, bar_color);
 
     DrawRectangleLines(bar_x, bar_y, bar_width, bar_height, BLACK);
+
+    if (boss->current_phase == BOSS_PHASE_SPELL1)
+    {
+        const char *spell_name = "Taboo: Four of a Kind";
+        int text_width = MeasureText(spell_name, 30);
+        DrawText(spell_name, (800 - text_width) / 2, 60, 30, GOLD);
+    }
 }
 
 void CheckPlayerVsBoss(Boss *boss, Bullet *player_bullets)

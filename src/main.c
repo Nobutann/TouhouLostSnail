@@ -61,6 +61,7 @@ int main(void)
             Texture2D bullet_orange = LoadTexture("assets/sprites/bullets/bullet_small_orange.png");
             Texture2D bullet_yellow_glow = LoadTexture("assets/sprites/bullets/bullet_medium_yellow_glow.png");
             Texture2D bullet_blue_outline = LoadTexture("assets/sprites/bullets/bullet_outline_blue.png");
+            Texture2D bullet_blue_solid = LoadTexture("assets/sprites/bullets/bullet_small_blue.png");
 
             BossAssets boss_assets = 
             {
@@ -68,7 +69,8 @@ int main(void)
                 .bullet_pink = bullet_pink,
                 .bullet_orange = bullet_orange,
                 .bullet_yellow_glow = bullet_yellow_glow,
-                .bullet_blue_outline = bullet_blue_outline
+                .bullet_blue_outline = bullet_blue_outline,
+                .bullet_blue_solid = bullet_blue_solid
             };
 
             Texture2D pause_menu1 = LoadTexture("assets/sprites/menu/pause_menu3.png");
@@ -178,6 +180,7 @@ int main(void)
             UnloadTexture(bullet_orange);
             UnloadTexture(bullet_yellow_glow);
             UnloadTexture(bullet_blue_outline);
+            UnloadTexture(bullet_blue_solid);
             UnloadTexture(pause_menu1);
             UnloadTexture(pause_menu2);
         }

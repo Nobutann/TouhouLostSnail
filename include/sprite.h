@@ -32,6 +32,7 @@ typedef struct
     Texture2D bullet_orange;
     Texture2D bullet_yellow_glow;
     Texture2D bullet_blue_outline;
+    Texture2D bullet_blue_solid;
 } BossAssets;
 
 void LoadPlayerSprites(PlayerSprites *player_sprites);
