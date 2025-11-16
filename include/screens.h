@@ -11,6 +11,6 @@ typedef enum
     EXIT_SCREEN
 } GameScreen;
 
-GameScreen menu(Music menu_music);
+GameScreen menu(Music menu_music, Texture2D background);
 
 #endif

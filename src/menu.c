@@ -1,7 +1,7 @@
 #include "screens.h"
 #include "raylib.h"
 
-GameScreen menu(Music menu_music)
+GameScreen menu(Music menu_music, Texture2D background)
 {
     const char options[3][8] = 
     {
@@ -10,7 +10,6 @@ GameScreen menu(Music menu_music)
         "Exit"
     };
     
-    Texture2D background = LoadTexture("assets/sprites/menu/menu.png");
     Vector2 background_pos;
 
     background_pos.x = (float)(GetScreenWidth() - background.width) / 2;
@@ -83,8 +82,6 @@ GameScreen menu(Music menu_music)
 
         EndDrawing();
     }
-
-    UnloadTexture(background);
     
     return EXIT_SCREEN;
 }
