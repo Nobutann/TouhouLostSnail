@@ -27,14 +27,11 @@ void LoadPlayerSprites(PlayerSprites *player_sprites)
 {
     const char *idlepath[] = 
     {
-        "assets/sprites/Player/reimuidle/reimuidle-1.png",
-        "assets/sprites/Player/reimuidle/reimuidle-2.png",
-        "assets/sprites/Player/reimuidle/reimuidle-3.png",
-        "assets/sprites/Player/reimuidle/reimuidle-4.png",
-        "assets/sprites/Player/reimuidle/reimuidle-5.png",
-        "assets/sprites/Player/reimuidle/reimuidle-6.png",
-        "assets/sprites/Player/reimuidle/reimuidle-7.png",
-        "assets/sprites/Player/reimuidle/reimuidle-8.png",
+        "assets/sprites/Player/hachikujiidle/hachikujiidle-1.png",
+        "assets/sprites/Player/hachikujiidle/hachikujiidle-2.png",
+        "assets/sprites/Player/hachikujiidle/hachikujiidle-3.png",
+        "assets/sprites/Player/hachikujiidle/hachikujiidle-4.png",
+        "assets/sprites/Player/hachikujiidle/hachikujiidle-5.png",
     };
 
     int idle_frame_count = sizeof(idlepath) / sizeof(idlepath[0]);
@@ -46,9 +43,19 @@ void LoadPlayerSprites(PlayerSprites *player_sprites)
 
     const char *rightpath[] = 
     {
-        "assets/sprites/Player/reimuright/reimuright-6.png",
-        "assets/sprites/Player/reimuright/reimuright-7.png",
-        "assets/sprites/Player/reimuright/reimuright-8.png",
+        "assets/sprites/Player/hachikujiright/hachikujiright-1.png",
+        "assets/sprites/Player/hachikujiright/hachikujiright-2.png",
+        "assets/sprites/Player/hachikujiright/hachikujiright-3.png",
+        "assets/sprites/Player/hachikujiright/hachikujiright-4.png",
+        "assets/sprites/Player/hachikujiright/hachikujiright-5.png",
+        "assets/sprites/Player/hachikujileft/hachikujileft-1.png",
+        "assets/sprites/Player/hachikujileft/hachikujileft-2.png",
+        "assets/sprites/Player/hachikujileft/hachikujileft-3.png",
+        "assets/sprites/Player/hachikujileft/hachikujileft-4.png",
+        "assets/sprites/Player/hachikujileft/hachikujileft-5.png",
+        "assets/sprites/Player/hachikujileft/hachikujileft-6.png",
+        "assets/sprites/Player/hachikujileft/hachikujileft-7.png",
+        "assets/sprites/Player/hachikujileft/hachikujileft-8.png",
     };
 
     int right_frame_count = sizeof(rightpath) / sizeof(rightpath[0]);
@@ -60,9 +67,14 @@ void LoadPlayerSprites(PlayerSprites *player_sprites)
 
     const char *leftpath[] = 
     {
-        "assets/sprites/Player/reimuleft/reimuleft-6.png",
-        "assets/sprites/Player/reimuleft/reimuleft-7.png",
-        "assets/sprites/Player/reimuleft/reimuleft-8.png",
+        "assets/sprites/Player/hachikujileft/hachikujileft-1.png",
+        "assets/sprites/Player/hachikujileft/hachikujileft-2.png",
+        "assets/sprites/Player/hachikujileft/hachikujileft-3.png",
+        "assets/sprites/Player/hachikujileft/hachikujileft-4.png",
+        "assets/sprites/Player/hachikujileft/hachikujileft-5.png",
+        "assets/sprites/Player/hachikujileft/hachikujileft-6.png",
+        "assets/sprites/Player/hachikujileft/hachikujileft-7.png",
+        "assets/sprites/Player/hachikujileft/hachikujileft-8.png",
     };
 
     int left_frame_count = sizeof(leftpath) / sizeof(leftpath[0]);

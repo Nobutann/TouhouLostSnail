@@ -11,10 +11,10 @@
 #define BULLET_DISTANCE_Y 20
 #define PLAYER_CENTER 15
 #define FOCUS_SPEED 350.0f
-#define RIGHT_LIMIT 760
-#define LEFT_LIMIT 15
-#define BOTTOM_LIMIT 715
-#define TOP_LIMIT 5
+#define RIGHT_LIMIT 700
+#define LEFT_LIMIT -60
+#define BOTTOM_LIMIT 650
+#define TOP_LIMIT -40
 
 HealthNode g_health1, g_health2, g_health3, g_health4;
 Bombs g_bomb1, g_bomb2, g_bomb3;
@@ -173,8 +173,8 @@ void DrawPlayer(Player *player)
     {
         Vector2 hitbox_center = 
         {
-            player->position.x + (player->sprites.idle.frames[0].width / 1.35f),
-            player->position.y + (player->sprites.idle.frames[0].height / 1.35f)
+            player->position.x + (player->sprites.idle.frames[0].width / 1.3f),
+            player->position.y + (player->sprites.idle.frames[0].height / 1.3f)
         };
         DrawCircleV(hitbox_center, HITBOX_RADIUS, WHITE);
     }
@@ -184,8 +184,8 @@ void PlayerShoot(Player *player, Bullet *bullets)
 {
     Vector2 center = 
     {
-        player->position.x + player->sprites.idle.frames[0].width / 2,
-        player->position.y + player->sprites.idle.frames[0].height / 2
+        player->position.x + player->sprites.idle.frames[0].width / 1.7,
+        player->position.y + player->sprites.idle.frames[0].height / 1
     };
 
     for (int i = 0; i < MAX_BULLETS; i++)

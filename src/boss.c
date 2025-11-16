@@ -212,8 +212,8 @@ void CheckBossVsPlayer(Player *player, EnemyBullet *enemy_bullets)
 
     Vector2 player_center = 
     {
-        player->position.x + (player->sprites.idle.frames[0].width / 1.5f),
-        player->position.y + (player->sprites.idle.frames[0].height / 1.5f)
+        player->position.x + (player->sprites.idle.frames[0].width / 1.3f),
+        player->position.y + (player->sprites.idle.frames[0].height / 1.3f)
     };
 
     for (int i = 0; i < MAX_ENEMY_BULLETS; i++)

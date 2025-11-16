@@ -32,17 +32,7 @@ void DrawBullets(Bullet *bullets)
     {
         if (bullets[i].active)
         {
-            Vector2 origin = {bullets[i].sprite.width / 1.0f, bullets[i].sprite.height / 1.0f};
-
-            DrawTexturePro
-            (
-                bullets[i].sprite, 
-                (Rectangle){0, 0, (float)bullets[i].sprite.width, (float)bullets[i].sprite.height},
-                (Rectangle){bullets[i].position.x, bullets[i].position.y, (float)bullets[i].sprite.width, (float)bullets[i].sprite.height},
-                origin,
-                -90.0f,
-                WHITE
-            );
+            DrawTextureEx(bullets[i].sprite, bullets[i].position, -90.0f, 1.0f, WHITE);
         }
     }
 }
