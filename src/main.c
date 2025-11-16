@@ -3,7 +3,7 @@
 #include "screens.h"
 #include "bullets.h"
 #include "boss.h"
-#include <stdio.h> 
+#include <stdio.h>
 
 
 #define HIGHSCORE_FILE "highscore.txt"
@@ -170,12 +170,20 @@ int main(void)
 
                     UpdatePlayer(&player, dt, bullets, shoot_sound, active_bombs);
                     UpdateBoss(&flandre, dt, enemy_bullets, player.position, &boss_assets);
+
+                    if (flandre.justChangedPhase)
+                    {
+                        currentScore += 50000; 
+                        flandre.justChangedPhase = false; 
+                    }
+
                     UpdateBullets(bullets, dt);
                     UpdateEnemyBullets(enemy_bullets, dt);
                     UpdateBombProjectiles(active_bombs, dt);
                     
                     CheckPlayerVsBoss(&flandre, bullets);
-                    CheckBossVsPlayer(&player, enemy_bullets);
+                    
+                    CheckBossVsPlayer(&player, enemy_bullets, &currentScore);
                 }
                 
                 BeginDrawing();
@@ -239,6 +247,7 @@ int main(void)
         }
     }
 
+    // Unloads Globais
     UnloadSound(shoot_sound);
     UnloadMusicStream(menu_music);
     UnloadTexture(menu_background);
