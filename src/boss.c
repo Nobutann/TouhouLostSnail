@@ -29,12 +29,12 @@ void NonSpell1(Boss *boss, EnemyBullet *enemy_bullets, Vector2 player_pos, BossA
 
     boss->move_timer += GetFrameTime();
 
-    if (boss->move_timer >= 2.0f)
+    if (boss->move_timer >= 2.5f)
     {
         boss->move_timer = 0.0f;
 
-        float min_x = 100.0f;
-        float max_x = 700.0f;
+        float min_x = 120.0f;
+        float max_x = 680.0f;
         boss->target_position.x = min_x + (rand() % (int)(max_x - min_x));
         boss->target_position.y = 100.0f;
     }
@@ -43,54 +43,57 @@ void NonSpell1(Boss *boss, EnemyBullet *enemy_bullets, Vector2 player_pos, BossA
     boss->position.x += (boss->target_position.x - boss->position.x) * move_speed * 0.1f;
     boss->position.y += (boss->target_position.y - boss->position.y) * move_speed * 0.1f;
 
-    if (boss->frame_counter % 6 == 0)
+    if (boss->frame_counter % 50 == 0)
     {
-        for (int i = 0; i < 8; i++)
+        int wave_bullets = 16;
+        float angle_step = (2.0f * PI) / wave_bullets;
+        float base_rotation = (boss->frame_counter * 0.05f);
+
+        for (int i = 0; i < wave_bullets; i++)
         {
-            float angle = (float)(rand() % 360) * DEG2RAD;
-            float speed = 180.0f + (rand() % 100);
+            float angle = (angle_step * i) + base_rotation;
+            float speed = 150.0f;
 
-            Texture2D random_sprites[] =
-            {
-                assets->bullet_red,
-                assets->bullet_pink,
-                assets->bullet_orange
-            };
-            Texture2D chosen = random_sprites[rand() % 3];
-
-            SpawnEnemyBullet(enemy_bullets, boss->position, angle, speed, BULLET_TYPE_NORMAL, chosen);
+            SpawnEnemyBullet(enemy_bullets, boss->position, angle, speed, BULLET_TYPE_NORMAL, assets->bullet_orange_oval);
         }
     }
 
-    if (boss->frame_counter % 20 == 0)
+    if (boss->frame_counter % 10 == 0)
+    {
+        for (int i = 0; i < 2; i++)
+        {
+            float angle = (float)(rand() % 360) * DEG2RAD;
+            float speed = 120.0f + (rand() % 60);
+
+            SpawnEnemyBullet(enemy_bullets, boss->position, angle, speed, BULLET_TYPE_NORMAL, assets->bullet_orange_oval);
+        }
+    }
+
+    if (boss->frame_counter % 35 == 0)
     {
         float dx = player_pos.x - boss->position.x;
         float dy = player_pos.y - boss->position.y;
         float base_angle = atan2f(dy, dx);
 
-        float spread_angles[] = {-15.0f * DEG2RAD, 0.0f, 15.0f * DEG2RAD};
-
         for (int i = 0; i < 3; i++)
         {
-            float angle = base_angle + spread_angles[i];
-            float speed = 320.0f;
+            float speed = 200.0f + (i * 20.0f);
 
-            SpawnEnemyBullet(enemy_bullets, boss->position, angle, speed, BULLET_TYPE_AIMED, assets->bullet_yellow_glow);
+            SpawnEnemyBullet(enemy_bullets, boss->position, base_angle, speed, BULLET_TYPE_AIMED, assets->bullet_orange_outline);
         }
     }
 
-    if (boss->frame_counter % 45 == 0)
+    if (boss->frame_counter % 120 == 0)
     {
-        int wave_bullets = 16;
-        float angle_step = (2.0f * PI) / wave_bullets;
-        float base_rotation = (boss->frame_counter * 0.1f);
+        int dense_bullets = 24;
+        float angle_step = (2.0f * PI) / dense_bullets;
 
-        for (int i = 0; i < wave_bullets; i++)
+        for (int i = 0; i < dense_bullets; i++)
         {
-            float angle = (angle_step * i) + base_rotation;
-            float speed = 140.0f;
+            float angle = angle_step * i;
+            float speed = 130.0f;
 
-            SpawnEnemyBullet(enemy_bullets, boss->position, angle, speed, BULLET_TYPE_NORMAL, assets->bullet_blue_outline);
+            SpawnEnemyBullet(enemy_bullets, boss->position, angle, speed, BULLET_TYPE_NORMAL, assets->bullet_orange_oval);
         }
     }
 }

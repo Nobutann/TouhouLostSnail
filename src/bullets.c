@@ -118,13 +118,26 @@ void DrawEnemyBullets(EnemyBullet *bullets)
     {
         if (bullets[i].active)
         {
-            Vector2 draw_pos =
+            float rotation_degrees = bullets[i].angle * RAD2DEG;
+
+            rotation_degrees += 90.0f;
+
+            Vector2 origin = 
             {
-                bullets[i].position.x - (bullets[i].sprite.width / 2.0f),
-                bullets[i].position.y - (bullets[i].sprite.height / 2.0f)
+                bullets[i].sprite.width / 2.0f,
+                bullets[i].sprite.height / 2.0f
             };
 
-            DrawTextureEx(bullets[i].sprite, draw_pos, 0.0f, 1.0f, WHITE);
+            Rectangle source = {0, 0, (float)bullets[i].sprite.width, (float)bullets[i].sprite.height};
+            Rectangle dest = 
+            {
+                bullets[i].position.x,
+                bullets[i].position.y,
+                (float)bullets[i].sprite.width,
+                (float)bullets[i].sprite.height
+            };
+
+            DrawTexturePro(bullets[i].sprite, source, dest, origin, rotation_degrees, RAYWHITE);
         }
     }
 }
