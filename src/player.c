@@ -5,6 +5,7 @@
 #include "sprite.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include "screens.h"
 
 #define FIRE_RATE 0.066f /* 15 tiros por segundo */
 #define BULLET_DISTANCE_X 8
@@ -218,11 +219,11 @@ void UnloadPlayer(Player *player)
 
 
 
-void LoseHealth(Player *player)
+void LoseHealth(Player *player, GameScreen *current_screen)
 {
     if (player->healths == NULL) 
     {   
-        printf("Game Over\n");
+        *current_screen = GAMEOVER_SCREEN;
         return;
     }
 

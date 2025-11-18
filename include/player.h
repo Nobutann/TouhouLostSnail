@@ -4,6 +4,7 @@
 #include "raylib.h"
 #include "sprite.h"
 #include "bullets.h"
+#include "screens.h"
 
 #define BASE_SPEED 350.0f
 #define HITBOX_RADIUS 3.0f
@@ -34,7 +35,7 @@ void UpdatePlayer(Player *player, float dt, Bullet *bullets, Sound shoot_sound, 
 void DrawPlayer(Player *player);
 void UnloadPlayer(Player *player);
 void PlayerShoot(Player *player, Bullet *bullets);
-void LoseHealth(Player *player);
+void LoseHealth(Player *player, GameScreen *current_screen);
 void DrawHealths(Player *player);
 void LoseBombs(Player *player);
 void DrawBombs(Player *player);

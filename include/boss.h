@@ -47,9 +47,11 @@ void DrawBoss(Boss *boss);
 void UnloadBoss(Boss *boss);
 
 void CheckPlayerVsBoss(Boss *boss, Bullet *player_bullets);
-void CheckBossVsPlayer(Player *player, EnemyBullet *enemy_bullets);
+void CheckBossVsPlayer(Player *player, EnemyBullet *enemy_bullets, GameScreen *current_screen);
 
 void NonSpell1(Boss *boss, EnemyBullet *enemy_bullets, Vector2 player_pos, BossAssets *assets);
 void SpellCard1(Boss *boss, EnemyBullet *enemy_bullets, Vector2 player_pos, BossAssets *assets);
+void SpellCard2(Boss *boss, EnemyBullet *enemy_bullets, Vector2 player_pos, BossAssets *assets);
+void NonSpell2(Boss *boss, EnemyBullet *enemy_bullets, Vector2 player_pos, BossAssets *assets);
 
 #endif

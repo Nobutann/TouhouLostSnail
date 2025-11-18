@@ -17,8 +17,11 @@ int main(void)
     Sound shoot_sound = LoadSound("assets/sounds/player_sounds/playerattack.wav");
     SetSoundVolume(shoot_sound, 0.02f);
     Music menu_music = LoadMusicStream("assets/sounds/musics/menumusic/menumusic.mp3");
+    Music game_music = LoadMusicStream("assets/sounds/musics/gamemusic/game_music.mp3");
+    SetMusicVolume(game_music, 0.1f);
 
     Texture2D menu_background = LoadTexture("assets/sprites/menu/menu.png");
+    Texture2D gameover_background = LoadTexture("assets/sprites/menu/gameover.png");
 
     while (current_screen != EXIT_SCREEN && !WindowShouldClose())
     {
@@ -34,6 +37,7 @@ int main(void)
             int selected = 0;
 
             StopMusicStream(menu_music);
+            PlayMusicStream(game_music);
 
             Player player;
             Bullet bullets[MAX_BULLETS];
@@ -85,6 +89,7 @@ int main(void)
 
             while (game_running && !WindowShouldClose())
             {
+                UpdateMusicStream(game_music);
                 float dt = GetFrameTime();
 
                 if (IsKeyPressed(KEY_ESCAPE))
@@ -133,9 +138,14 @@ int main(void)
                     UpdateBullets(bullets, dt);
                     UpdateEnemyBullets(enemy_bullets, dt);
                     UpdateBombProjectiles(active_bombs, dt);
-                    
+                    GameScreen *screen_pointer = &current_screen;
                     CheckPlayerVsBoss(&flandre, bullets);
-                    CheckBossVsPlayer(&player, enemy_bullets);
+                    CheckBossVsPlayer(&player, enemy_bullets, screen_pointer);
+
+                    if (current_screen == GAMEOVER_SCREEN)
+                    {
+                        game_running = false;
+                    }
                 }
                 
                 BeginDrawing();
@@ -175,6 +185,7 @@ int main(void)
                 EndDrawing();
             }
 
+            StopMusicStream(game_music);
             UnloadPlayer(&player);
             UnloadBoss(&flandre);
             UnloadTexture(bullet_sprite);
@@ -190,11 +201,22 @@ int main(void)
             UnloadTexture(pause_menu1);
             UnloadTexture(pause_menu2);
         }
+
+        else if (current_screen == GAMEOVER_SCREEN)
+        {
+            PlayMusicStream(menu_music);
+            current_screen = gameover(gameover_background, menu_music);
+
+            BeginDrawing();
+            EndDrawing();
+        }
     }
 
     UnloadSound(shoot_sound);
     UnloadMusicStream(menu_music);
+    UnloadMusicStream(game_music);
     UnloadTexture(menu_background);
+    UnloadTexture(gameover_background);
 
     CloseAudioDevice();
     CloseWindow();

@@ -541,7 +541,7 @@ void CheckPlayerVsBoss(Boss *boss, Bullet *player_bullets)
     }
 }
 
-void CheckBossVsPlayer(Player *player, EnemyBullet *enemy_bullets)
+void CheckBossVsPlayer(Player *player, EnemyBullet *enemy_bullets, GameScreen *current_screen)
 {
     if (player->is_invulnerable)
     {
@@ -560,7 +560,7 @@ void CheckBossVsPlayer(Player *player, EnemyBullet *enemy_bullets)
         {
             if (CheckCollisionCircles(player_center, HITBOX_RADIUS, enemy_bullets[i].position, enemy_bullets[i].radius))
             {
-                LoseHealth(player);
+                LoseHealth(player, current_screen);
 
                 player->is_invulnerable = true;
                 player->invul_timer = INVULNERABILITY_TIME;
