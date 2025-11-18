@@ -157,111 +157,86 @@ void NonSpell2(Boss *boss, EnemyBullet *enemy_bullets, Vector2 player_pos, BossA
 
     boss->move_timer += GetFrameTime();
 
-    if (boss->move_timer >= 1.5f)
+    if (boss->move_timer >= 2.0f)
     {
         boss->move_timer = 0.0f;
 
-        float min_x = 100.0f;
-        float max_x = 400.0f;
+        float min_x = 150.0f;
+        float max_x = 650.0f;
 
         boss->target_position.x = min_x + (rand() % (int)(max_x - min_x));
-        boss->target_position.y = 80.0f + (rand() % 60);
+        boss->target_position.y = 100.0f;
     }
 
-    float move_speed = 200.0f * GetFrameTime();
-    boss->position.x += (boss->target_position.x - boss->position.x * move_speed * 0.15f);
-    boss->position.y += (boss->target_position.y - boss->position.y * move_speed * 0.15f);
+    float move_speed = 120.0f * GetFrameTime();
+    boss->position.x += (boss->target_position.x - boss->position.x) * move_speed * 0.12f;
+    boss->position.y += (boss->target_position.y - boss->position.y) * move_speed * 0.12f;
 
-    if (boss->frame_counter % 25 == 0)
+    if (boss->frame_counter % 60 == 0)
     {
-        int bullets_per_wave = 24;
-        float angle_step = (2.0f * PI) / bullets_per_wave;
-        float base_rotation = (boss->frame_counter * 0.05f);
+        int wave_bullets = 16;
+        float angle_step = (2.0f * PI) / wave_bullets;
+        float base_rotation = (boss->frame_counter * 0.04f);
 
-        float speeds[3] = {100.0f, 160.0f, 220.0f};
-        Texture2D wave_colors[3] = 
+        for (int i = 0; i < wave_bullets; i++)
         {
-            assets->bullet_blue_solid,
-            assets->bullet_pink,
-            assets->bullet_red
-        };
+            float angle = (angle_step * i) + base_rotation;
+            float speed = 120.0f;
 
-        for (int i = 0; i < 3; i++)
-        {
-            for (int j = 0; j < bullets_per_wave; j++)
-            {
-                float angle = (angle_step * i) + base_rotation + (i * 0.1f);
-
-                SpawnEnemyBullet(enemy_bullets, boss->position, angle, speeds[i], BULLET_TYPE_NORMAL, wave_colors[i]);
-            }
+            SpawnEnemyBullet(enemy_bullets, boss->position, angle, speed, BULLET_TYPE_NORMAL, assets->bullet_red);
         }
     }
 
-    if (boss->frame_counter % 8 == 0)
+    if (boss->frame_counter % 45 == 0)
+    {
+        float base_rotation = (boss->frame_counter * 0.05f);
+
+        for (int i = 0; i < 5; i++)
+        {
+            float angle = (PI * 0.7f) + (i * 0.15f) + base_rotation;
+            float speed = 140.0f + (i * 10.0f);
+
+            SpawnEnemyBullet(enemy_bullets, boss->position, angle, speed, BULLET_TYPE_NORMAL, assets->bullet_blue_solid);
+        }
+
+        for (int i = 0; i < 5; i++)
+        {
+            float angle = (PI * 0.3f) - (i * 0.15f) + base_rotation;
+            float speed = (140.0f + (i * 10.0f));
+
+            SpawnEnemyBullet(enemy_bullets, boss->position, angle, speed, BULLET_TYPE_NORMAL, assets->bullet_blue_solid);
+        }
+    }    
+
+    if (boss->frame_counter % 45 == 0)
     {
         float dx = player_pos.x - boss->position.x;
         float dy = player_pos.y - boss->position.y;
         float base_angle = atan2f(dy, dx);
 
-        for (int i = -2; i <= 2; i++)
+        for (int i = -1; i < 1; i++)
         {
-            float angle = base_angle + (i * 12.5f * DEG2RAD);
-            float speed = 280.0f + (abs(i) * 20.0f);
+            float angle = base_angle + (i * 15.0f * DEG2RAD);
+            float speed = 200.0f;
 
-            SpawnEnemyBullet(enemy_bullets, boss->position, angle, speed, BULLET_TYPE_AIMED, assets->bullet_yellow_glow);
+            SpawnEnemyBullet(enemy_bullets, boss->position, angle, speed, BULLET_TYPE_AIMED, assets->bullet_pink);
         }
     }
 
-    if (boss->frame_counter % 18 == 0)
+    if (boss->frame_counter % 80 == 0)
     {
-        float base_rotation = (boss->frame_counter * 0.03f);
-
-        for (int i = 0; i < 8; i++)
-        {
-            float direction_angle = (i * PI / 4.0f) + base_rotation;
-
-            for (int j = 0; j < 3; j++)
-            {
-                float angle = direction_angle + (j * 0.12f);
-                float speed = 190.0f + (j * 25.0f);
-
-                SpawnEnemyBullet(enemy_bullets, boss->position, angle, speed, BULLET_TYPE_NORMAL, assets->bullet_orange);
-            }
-        }
-    }
-
-    if (boss->frame_counter % 35 == 0)
-    {
-        float cross_angles[4] = {0.0f, PI / 2.0f, PI, 3.0f * PI / 2.0f};
-        float base_rotation = (boss->frame_counter * 0.07f);
+        float cross_rotation = (boss->frame_counter * 0.06f);
 
         for (int i = 0; i < 4; i++)
         {
-            for (int j = 0; j < 5; j++)
+            float angle = (i * PI / 2.0f) + cross_rotation;
+            
+            for (int j = 0; j < 3; j++)
             {
-                float angle = cross_angles[i] + base_rotation + (j * 0.1f);
-                float speed = 250.0f + (j * 15.0f);
-
-                SpawnEnemyBullet(enemy_bullets, boss->position, angle, speed, BULLET_TYPE_NORMAL, assets->bullet_pink);
+                float speed = 100.0f + (j * 40.0f);
+                
+                SpawnEnemyBullet(enemy_bullets, boss->position, angle, speed, BULLET_TYPE_NORMAL, assets->bullet_orange);
             }
-        }
-    }
-
-    if (boss->frame_counter % 5 == 0)
-    {
-        for (int i = 0; i < 2; i++)
-        {
-            float random_angle = (float)(rand() % 360) * DEG2RAD;
-            float speed = 200.0f + (rand() % 100);
-
-            Texture2D chaos_colors[] = 
-            {
-                assets->bullet_red,
-                assets->bullet_blue_outline,
-                assets->bullet_pink
-            };
-
-            SpawnEnemyBullet(enemy_bullets, boss->position, random_angle, speed, BULLET_TYPE_NORMAL, chaos_colors[rand() % 3]);
         }
     }
 }
@@ -425,7 +400,7 @@ void UpdateBoss(Boss *boss, float dt, EnemyBullet *enemy_bullets, Vector2 player
                     enemy_bullets[i].active = false;
                 }
 
-                boss->current_phase = BOSS_PHASE_NONSPELL3;
+                boss->current_phase = BOSS_PHASE_DEFEATED;
                 boss->frame_counter = 0;
             }
             break;
@@ -497,7 +472,7 @@ void DrawBoss(Boss *boss)
     float health_percent = boss->health / boss->max_health;
 
     Color bar_color = PURPLE;
-    if (boss->current_phase == BOSS_PHASE_SPELL1 || boss->current_phase == BOSS_PHASE_SPELL2 || boss->current_phase == BOSS_PHASE_SPELL3 || boss->current_phase == BOSS_PHASE_SPELL4)
+    if (boss->current_phase == BOSS_PHASE_SPELL1 || boss->current_phase == BOSS_PHASE_SPELL2)
     {
         bar_color = GOLD;
     }
