@@ -104,7 +104,7 @@ void UpdateEnemyBullets(EnemyBullet *bullets, float dt)
             bullets[i].position.x += bullets[i].velocity.x * dt;
             bullets[i].position.y += bullets[i].velocity.y * dt;
 
-            if (bullets[i].position.x < -50 || bullets[i].position.x > 850 || bullets[i].position.y < -50 || bullets[i].position.y > 850)
+            if (bullets[i].position.x < 25 || bullets[i].position.x > 805 || bullets[i].position.y < 25 || bullets[i].position.y > 780)
             {
                 bullets[i].active = false;
             }
