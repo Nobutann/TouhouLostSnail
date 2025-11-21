@@ -3,8 +3,7 @@
 #include "screens.h"
 #include "bullets.h"
 #include "boss.h"
-#include <stdio.h>
-
+#include <stdio.h> 
 
 #define HIGHSCORE_FILE "highscore.txt"
 
@@ -21,15 +20,10 @@ int LoadHighScore()
 void SaveHighScore(int score)
 {
     FILE *file = fopen(HIGHSCORE_FILE, "w");
-    if (file == NULL)
-    {
-        printf("ERRO: Não foi possível salvar o high score!\n");
-        return;
-    }
+    if (file == NULL) { printf("ERRO: Salvar High Score\n"); return; }
     fprintf(file, "%d", score);
     fclose(file);
 }
-
 
 int main(void)
 {
@@ -67,14 +61,14 @@ int main(void)
             float scoreInterval = 0.1f; 
             int pointsPerInterval = 10; 
 
+            ScorePopup popups[MAX_POPUPS];
+            InitPopups(popups);
+
             Player player;
             Bullet bullets[MAX_BULLETS];
             BombProjectile active_bombs[MAX_ACTIVE_BOMBS];
 
-            for (int i = 0; i < MAX_ACTIVE_BOMBS; i += 1)
-            {
-                active_bombs[i].active = false;
-            }
+            for (int i = 0; i < MAX_ACTIVE_BOMBS; i += 1) active_bombs[i].active = false;
             
             Boss flandre;
             EnemyBullet enemy_bullets[MAX_ENEMY_BULLETS];
@@ -94,6 +88,8 @@ int main(void)
             Texture2D bullet_yellow_glow = LoadTexture("assets/sprites/bullets/bullet_medium_yellow_glow.png");
             Texture2D bullet_blue_outline = LoadTexture("assets/sprites/bullets/bullet_outline_blue.png");
             Texture2D bullet_blue_solid = LoadTexture("assets/sprites/bullets/bullet_small_blue.png");
+            Texture2D bullet_orange_oval = LoadTexture("assets/sprites/bullets/bullet_oval_orange.png");
+            Texture2D bullet_orange_outline = LoadTexture("assets/sprites/bullets/bullet_orange_outline.png");
 
             BossAssets boss_assets = 
             {
@@ -102,7 +98,9 @@ int main(void)
                 .bullet_orange = bullet_orange,
                 .bullet_yellow_glow = bullet_yellow_glow,
                 .bullet_blue_outline = bullet_blue_outline,
-                .bullet_blue_solid = bullet_blue_solid
+                .bullet_blue_solid = bullet_blue_solid,
+                .bullet_orange_oval = bullet_orange_oval,
+                .bullet_orange_outline = bullet_orange_outline
             };
 
             Texture2D pause_menu1 = LoadTexture("assets/sprites/menu/pause_menu3.png");
@@ -115,42 +113,19 @@ int main(void)
             {
                 float dt = GetFrameTime();
 
-                if (IsKeyPressed(KEY_ESCAPE))
-                {
-                    is_paused = !is_paused;
-                }
+                if (IsKeyPressed(KEY_ESCAPE)) is_paused = !is_paused;
                 
                 if (is_paused)
                 {
-                    if (IsKeyPressed(KEY_UP))
-                    {
-                        selected--;
-                    }
-                    if (IsKeyPressed(KEY_DOWN))
-                    {
-                        selected++;
-                    }
-                    if (selected < 0)
-                    {
-                        selected = 1;
-                    }
-                    if (selected > 1)
-                    {
-                        selected = 0;
-                    }
+                    if (IsKeyPressed(KEY_UP)) selected--;
+                    if (IsKeyPressed(KEY_DOWN)) selected++;
+                    if (selected < 0) selected = 1;
+                    if (selected > 1) selected = 0;
 
                     if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_Z))
                     {
-                        if (selected == 0)
-                        {
-                            is_paused = false;
-                            selected = 0;
-                        }
-                        else if (selected == 1)
-                        {
-                            game_running = false;
-                            current_screen = MENU_SCREEN;
-                        }
+                        if (selected == 0) { is_paused = false; selected = 0; }
+                        else if (selected == 1) { game_running = false; current_screen = MENU_SCREEN; }
                     }
                 }
 
@@ -162,11 +137,7 @@ int main(void)
                         currentScore += pointsPerInterval;
                         scoreTimer -= scoreInterval; 
                     }
-                    
-                    if (currentScore > highScore)
-                    {
-                        highScore = currentScore;
-                    }
+                    if (currentScore > highScore) highScore = currentScore;
 
                     UpdatePlayer(&player, dt, bullets, shoot_sound, active_bombs);
                     UpdateBoss(&flandre, dt, enemy_bullets, player.position, &boss_assets);
@@ -175,56 +146,48 @@ int main(void)
                     {
                         currentScore += 50000; 
                         flandre.justChangedPhase = false; 
+                        SpawnPopup(popups, (Vector2){400, 300}, "PHASE CLEAR! +50000", GOLD, 30);
                     }
 
                     UpdateBullets(bullets, dt);
                     UpdateEnemyBullets(enemy_bullets, dt);
                     UpdateBombProjectiles(active_bombs, dt);
                     
+                    UpdatePopups(popups, dt);
+
                     CheckPlayerVsBoss(&flandre, bullets);
                     
-                    CheckBossVsPlayer(&player, enemy_bullets, &currentScore);
+                    CheckBossVsPlayer(&player, enemy_bullets, &currentScore, popups, &current_screen);
                 }
                 
                 BeginDrawing();
                     ClearBackground(RAYWHITE);
                     Vector2 map_pos = {0, 0};
                     DrawAnimationFrame(&map, map_pos, 1.0f, WHITE);
-                    if (!is_paused)
-                    {
-                        UpdateAnimation(&map, dt);
-                    }
+                    if (!is_paused) UpdateAnimation(&map, dt);
+                    
                     DrawPlayer(&player);
                     DrawBoss(&flandre);
                     DrawEnemyBullets(enemy_bullets);
                     DrawBullets(bullets);
                     DrawBombProjectiles(active_bombs);
+                    
+                    DrawPopups(popups); 
+
                     DrawHealths(&player);
                     DrawBombs(&player);
 
-                    DrawText(TextFormat("SCORE: %010d", currentScore), 
-                             850, 20, 30, WHITE);
-                    
-                    DrawText(TextFormat("HIGH:  %010d", highScore), 
-                             850, 60, 30, LIGHTGRAY);
+                    DrawText(TextFormat("SCORE: %010d", currentScore), 850, 20, 30, WHITE);
+                    DrawText(TextFormat("HIGH:  %010d", highScore), 850, 60, 30, LIGHTGRAY);
 
                     if (is_paused)
                     {
                         Vector2 menu_pos;
                         Texture2D menu_text;
-
-                        if (selected == 0)
-                        {
-                            menu_text = pause_menu1;
-                        }
-                        else
-                        {
-                            menu_text = pause_menu2;
-                        }
-
+                        if (selected == 0) menu_text = pause_menu1;
+                        else menu_text = pause_menu2;
                         menu_pos.x = (float)(GetScreenWidth() - menu_text.width) / 2;
                         menu_pos.y = (float)(GetScreenHeight() - menu_text.height) / 2;
-                        
                         DrawTexture(menu_text, menu_pos.x, menu_pos.y, RAYWHITE);
                     }
                 EndDrawing();
@@ -242,12 +205,13 @@ int main(void)
             UnloadTexture(bullet_yellow_glow);
             UnloadTexture(bullet_blue_outline);
             UnloadTexture(bullet_blue_solid);
+            UnloadTexture(bullet_orange_oval);
+            UnloadTexture(bullet_orange_outline);
             UnloadTexture(pause_menu1);
             UnloadTexture(pause_menu2);
         }
     }
 
-    // Unloads Globais
     UnloadSound(shoot_sound);
     UnloadMusicStream(menu_music);
     UnloadTexture(menu_background);

@@ -19,23 +19,23 @@ void InitBoss(Boss *boss, Vector2 initial_pos)
     boss->frame_counter = 0;
     boss->move_timer = 0.0f;
     boss->is_moving = false;
-    boss->justChangedPhase = false;
+    boss->justChangedPhase = false; 
 
     LoadBossSprites(&boss->sprites);
 }
 
+
+
 void NonSpell1(Boss *boss, EnemyBullet *enemy_bullets, Vector2 player_pos, BossAssets *assets)
 {
     boss->frame_counter++;
-
     boss->move_timer += GetFrameTime();
 
-    if (boss->move_timer >= 2.0f)
+    if (boss->move_timer >= 2.5f)
     {
         boss->move_timer = 0.0f;
-
-        float min_x = 100.0f;
-        float max_x = 700.0f;
+        float min_x = 120.0f;
+        float max_x = 680.0f;
         boss->target_position.x = min_x + (rand() % (int)(max_x - min_x));
         boss->target_position.y = 100.0f;
     }
@@ -44,54 +44,52 @@ void NonSpell1(Boss *boss, EnemyBullet *enemy_bullets, Vector2 player_pos, BossA
     boss->position.x += (boss->target_position.x - boss->position.x) * move_speed * 0.1f;
     boss->position.y += (boss->target_position.y - boss->position.y) * move_speed * 0.1f;
 
-    if (boss->frame_counter % 6 == 0)
+    if (boss->frame_counter % 50 == 0)
     {
-        for (int i = 0; i < 8; i++)
+        int wave_bullets = 16;
+        float angle_step = (2.0f * PI) / wave_bullets;
+        float base_rotation = (boss->frame_counter * 0.05f);
+
+        for (int i = 0; i < wave_bullets; i++)
         {
-            float angle = (float)(rand() % 360) * DEG2RAD;
-            float speed = 180.0f + (rand() % 100);
-
-            Texture2D random_sprites[] =
-            {
-                assets->bullet_red,
-                assets->bullet_pink,
-                assets->bullet_orange
-            };
-            Texture2D chosen = random_sprites[rand() % 3];
-
-            SpawnEnemyBullet(enemy_bullets, boss->position, angle, speed, BULLET_TYPE_NORMAL, chosen);
+            float angle = (angle_step * i) + base_rotation;
+            float speed = 150.0f;
+            SpawnEnemyBullet(enemy_bullets, boss->position, angle, speed, BULLET_TYPE_NORMAL, assets->bullet_orange_oval);
         }
     }
 
-    if (boss->frame_counter % 20 == 0)
+    if (boss->frame_counter % 10 == 0)
+    {
+        for (int i = 0; i < 2; i++)
+        {
+            float angle = (float)(rand() % 360) * DEG2RAD;
+            float speed = 120.0f + (rand() % 60);
+            SpawnEnemyBullet(enemy_bullets, boss->position, angle, speed, BULLET_TYPE_NORMAL, assets->bullet_orange_oval);
+        }
+    }
+
+    if (boss->frame_counter % 35 == 0)
     {
         float dx = player_pos.x - boss->position.x;
         float dy = player_pos.y - boss->position.y;
         float base_angle = atan2f(dy, dx);
 
-        float spread_angles[] = {-15.0f * DEG2RAD, 0.0f, 15.0f * DEG2RAD};
-
         for (int i = 0; i < 3; i++)
         {
-            float angle = base_angle + spread_angles[i];
-            float speed = 320.0f;
-
-            SpawnEnemyBullet(enemy_bullets, boss->position, angle, speed, BULLET_TYPE_AIMED, assets->bullet_yellow_glow);
+            float speed = 200.0f + (i * 20.0f);
+            SpawnEnemyBullet(enemy_bullets, boss->position, base_angle, speed, BULLET_TYPE_AIMED, assets->bullet_orange_outline);
         }
     }
 
-    if (boss->frame_counter % 45 == 0)
+    if (boss->frame_counter % 120 == 0)
     {
-        int wave_bullets = 16;
-        float angle_step = (2.0f * PI) / wave_bullets;
-        float base_rotation = (boss->frame_counter * 0.1f);
-
-        for (int i = 0; i < wave_bullets; i++)
+        int dense_bullets = 24;
+        float angle_step = (2.0f * PI) / dense_bullets;
+        for (int i = 0; i < dense_bullets; i++)
         {
-            float angle = (angle_step * i) + base_rotation;
-            float speed = 140.0f;
-
-            SpawnEnemyBullet(enemy_bullets, boss->position, angle, speed, BULLET_TYPE_NORMAL, assets->bullet_blue_outline);
+            float angle = angle_step * i;
+            float speed = 130.0f;
+            SpawnEnemyBullet(enemy_bullets, boss->position, angle, speed, BULLET_TYPE_NORMAL, assets->bullet_orange_oval);
         }
     }
 }
@@ -99,7 +97,6 @@ void NonSpell1(Boss *boss, EnemyBullet *enemy_bullets, Vector2 player_pos, BossA
 void SpellCard1(Boss *boss, EnemyBullet *enemy_bullets, Vector2 player_pos, BossAssets *assets)
 {
     boss->frame_counter++;
-    
     boss->target_position.x = 400.0f;
     boss->target_position.y = 150.0f;
 
@@ -110,25 +107,15 @@ void SpellCard1(Boss *boss, EnemyBullet *enemy_bullets, Vector2 player_pos, Boss
     if (boss->frame_counter % 3 == 0)
     {
         float base_rotation = (boss->frame_counter * 0.05);
-
         float directions[4] = {0.0f, PI / 2.0f, PI, 3.0f * PI / 2.0f};
-
-        Texture2D colors[4] = 
-        {
-            assets->bullet_red,
-            assets->bullet_blue_solid,
-            assets->bullet_pink,
-            assets->bullet_yellow_glow
-        };
+        Texture2D colors[4] = { assets->bullet_red, assets->bullet_blue_solid, assets->bullet_pink, assets->bullet_yellow_glow };
 
         for (int i = 0; i < 4; i++)
         {
             for (int j = 0; j < 3; j++)
             {
                 float angle = directions[i] + base_rotation + (j * 0.15f);
-
                 float speed = 200.0f + (j * 30.0f);
-
                 SpawnEnemyBullet(enemy_bullets, boss->position, angle, speed, BULLET_TYPE_NORMAL, colors[i]);
             }
         }
@@ -138,16 +125,188 @@ void SpellCard1(Boss *boss, EnemyBullet *enemy_bullets, Vector2 player_pos, Boss
     {
         int wave_count = 20;
         float angle_step = (2.0f * PI) / wave_count;
-
         for (int i = 0; i < wave_count; i++)
         {
             float angle = angle_step * i;
             float speed = 120.0f;
-
             SpawnEnemyBullet(enemy_bullets, boss->position, angle, speed, BULLET_TYPE_NORMAL, assets->bullet_orange);
         }
     }
 }
+
+void NonSpell2(Boss *boss, EnemyBullet *enemy_bullets, Vector2 player_pos, BossAssets *assets)
+{
+    boss->frame_counter++;
+    boss->move_timer += GetFrameTime();
+
+    if (boss->move_timer >= 1.5f)
+    {
+        boss->move_timer = 0.0f;
+        float min_x = 100.0f;
+        float max_x = 400.0f;
+        boss->target_position.x = min_x + (rand() % (int)(max_x - min_x));
+        boss->target_position.y = 80.0f + (rand() % 60);
+    }
+
+    float move_speed = 200.0f * GetFrameTime();
+    boss->position.x += (boss->target_position.x - boss->position.x * move_speed * 0.15f);
+    boss->position.y += (boss->target_position.y - boss->position.y * move_speed * 0.15f);
+
+    if (boss->frame_counter % 25 == 0)
+    {
+        int bullets_per_wave = 24;
+        float angle_step = (2.0f * PI) / bullets_per_wave;
+        float base_rotation = (boss->frame_counter * 0.05f);
+        float speeds[3] = {100.0f, 160.0f, 220.0f};
+        Texture2D wave_colors[3] = { assets->bullet_blue_solid, assets->bullet_pink, assets->bullet_red };
+
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j < bullets_per_wave; j++)
+            {
+                float angle = (angle_step * i) + base_rotation + (i * 0.1f);
+                SpawnEnemyBullet(enemy_bullets, boss->position, angle, speeds[i], BULLET_TYPE_NORMAL, wave_colors[i]);
+            }
+        }
+    }
+
+    if (boss->frame_counter % 8 == 0)
+    {
+        float dx = player_pos.x - boss->position.x;
+        float dy = player_pos.y - boss->position.y;
+        float base_angle = atan2f(dy, dx);
+
+        for (int i = -2; i <= 2; i++)
+        {
+            float angle = base_angle + (i * 12.5f * DEG2RAD);
+            float speed = 280.0f + (abs(i) * 20.0f);
+            SpawnEnemyBullet(enemy_bullets, boss->position, angle, speed, BULLET_TYPE_AIMED, assets->bullet_yellow_glow);
+        }
+    }
+
+    if (boss->frame_counter % 18 == 0)
+    {
+        float base_rotation = (boss->frame_counter * 0.03f);
+        for (int i = 0; i < 8; i++)
+        {
+            float direction_angle = (i * PI / 4.0f) + base_rotation;
+            for (int j = 0; j < 3; j++)
+            {
+                float angle = direction_angle + (j * 0.12f);
+                float speed = 190.0f + (j * 25.0f);
+                SpawnEnemyBullet(enemy_bullets, boss->position, angle, speed, BULLET_TYPE_NORMAL, assets->bullet_orange);
+            }
+        }
+    }
+
+    if (boss->frame_counter % 35 == 0)
+    {
+        float cross_angles[4] = {0.0f, PI / 2.0f, PI, 3.0f * PI / 2.0f};
+        float base_rotation = (boss->frame_counter * 0.07f);
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 5; j++)
+            {
+                float angle = cross_angles[i] + base_rotation + (j * 0.1f);
+                float speed = 250.0f + (j * 15.0f);
+                SpawnEnemyBullet(enemy_bullets, boss->position, angle, speed, BULLET_TYPE_NORMAL, assets->bullet_pink);
+            }
+        }
+    }
+
+    if (boss->frame_counter % 5 == 0)
+    {
+        for (int i = 0; i < 2; i++)
+        {
+            float random_angle = (float)(rand() % 360) * DEG2RAD;
+            float speed = 200.0f + (rand() % 100);
+            Texture2D chaos_colors[] = { assets->bullet_red, assets->bullet_blue_outline, assets->bullet_pink };
+            SpawnEnemyBullet(enemy_bullets, boss->position, random_angle, speed, BULLET_TYPE_NORMAL, chaos_colors[rand() % 3]);
+        }
+    }
+}
+
+void SpellCard2(Boss *boss, EnemyBullet *enemy_bullets, Vector2 player_pos, BossAssets *assets)
+{
+    boss->frame_counter++;
+    boss->target_position.x = 400.0f;
+    boss->target_position.y = 120.0f;
+
+    float move_speed = 100.0f * GetFrameTime();
+    boss->position.x += (boss->target_position.x - boss->position.x) * move_speed * 0.1f;
+    boss->position.y += (boss->target_position.y - boss->position.y) * move_speed * 0.1f;
+
+    if (boss->frame_counter % 80 == 0)
+    {
+        int main_wave_bullets = 32;
+        float angle_step = (2.0f * PI) / main_wave_bullets;
+        float base_rotation = (boss->frame_counter * 0.08f);
+        for (int i = 0; i < main_wave_bullets; i++)
+        {
+            float angle = (angle_step * i) + base_rotation;
+            for (int j = 0; j < 3; j++)
+            {
+                float speed = 80.0f + (j * 50.0f);
+                SpawnEnemyBullet(enemy_bullets, boss->position, angle, speed, BULLET_TYPE_NORMAL, assets->bullet_red);
+            }
+        }
+    }
+
+    if (boss->frame_counter % 40 == 0)
+    {
+        int star_points = 16;
+        float angle_step = (2.0f * PI) / star_points;
+        float rotation_offset = (boss->frame_counter * 0.1f);
+        for (int i = 0; i < star_points; i++)
+        {
+            float angle = (angle_step * i) + rotation_offset;
+            if (i % 2 == 0)
+                SpawnEnemyBullet(enemy_bullets, boss->position, angle, 200.0f, BULLET_TYPE_NORMAL, assets->bullet_yellow_glow);
+            else
+                SpawnEnemyBullet(enemy_bullets, boss->position, angle, 150.0f, BULLET_TYPE_NORMAL, assets->bullet_orange_oval);
+        }
+    }
+
+    if (boss->frame_counter % 20 == 0)
+    {
+        float dx = player_pos.x - boss->position.x;
+        float dy = player_pos.y - boss->position.y;
+        float base_angle = atan2f(dy, dx);
+        for (int i = -3; i <= 3; i++)
+        {
+            float angle = base_angle + (i * 8.0f * DEG2RAD);
+            float speed = 250.0f;
+            SpawnEnemyBullet(enemy_bullets, boss->position, angle, speed, BULLET_TYPE_AIMED, assets->bullet_pink);
+        }
+    }
+
+    if (boss->frame_counter % 60 == 0)
+    {
+        float cross_rotation = (boss->frame_counter * 0.05f);
+        for (int i = 0; i < 4; i++)
+        {
+            float base_angle = (i * PI / 2.0f) + cross_rotation;
+            for (int j = 0; j < 5; j++)
+            {
+                float angle = base_angle;
+                float speed = 100.0f + (j * 30.0f);
+                SpawnEnemyBullet(enemy_bullets, boss->position, angle, speed, BULLET_TYPE_NORMAL, assets->bullet_blue_solid);
+            }
+        }
+    }
+
+    if (boss->frame_counter % 5 == 0)
+    {
+        float spiral_angle = (boss->frame_counter * 0.15f);
+        for (int i = 0; i < 2; i++)
+        {
+            float angle = spiral_angle + (i * PI);
+            float speed = 180.0f;
+            SpawnEnemyBullet(enemy_bullets, boss->position, angle, speed, BULLET_TYPE_NORMAL, assets->bullet_orange);
+        }
+    }
+}
+
 
 void UpdateBoss(Boss *boss, float dt, EnemyBullet *enemy_bullets, Vector2 player_pos, BossAssets *assets)
 {
@@ -157,25 +316,50 @@ void UpdateBoss(Boss *boss, float dt, EnemyBullet *enemy_bullets, Vector2 player
     {
         case BOSS_PHASE_NONSPELL1:
             NonSpell1(boss, enemy_bullets, player_pos, assets);
-
             if (boss->health <= 0)
             {
                 boss->current_phase = BOSS_PHASE_SPELL1;
                 boss->frame_counter = 0;
                 boss->health = BOSS_HEALTH_SPELL1;
                 boss->max_health = BOSS_HEALTH_SPELL1;
-                boss->justChangedPhase = true;
+                boss->justChangedPhase = true; 
             }
             break;
 
         case BOSS_PHASE_SPELL1:
             SpellCard1(boss, enemy_bullets, player_pos, assets);
-
             if (boss->health <= 0)
             {
+                for (int i = 0; i < MAX_ENEMY_BULLETS; i++) enemy_bullets[i].active = false;
                 boss->current_phase = BOSS_PHASE_NONSPELL2;
                 boss->frame_counter = 0;
-                boss->justChangedPhase = true;
+                boss->health = BOSS_HEALTH_NONSPELL2;
+                boss->max_health = BOSS_HEALTH_NONSPELL2;
+                boss->justChangedPhase = true; 
+            }
+            break;
+        
+        case BOSS_PHASE_NONSPELL2:
+            NonSpell2(boss, enemy_bullets, player_pos, assets);
+            if (boss->health <= 0)
+            {
+                for (int i = 0; i < MAX_ENEMY_BULLETS; i++) enemy_bullets[i].active = false;
+                boss->current_phase = BOSS_PHASE_SPELL2;
+                boss->frame_counter = 0;
+                boss->health = BOSS_HEALTH_SPELL2;
+                boss->max_health = BOSS_HEALTH_SPELL2;
+                boss->justChangedPhase = true; 
+            }
+            break;
+
+        case BOSS_PHASE_SPELL2:
+            SpellCard2(boss, enemy_bullets, player_pos, assets);
+            if (boss->health <= 0)
+            {
+                for (int i = 0; i < MAX_ENEMY_BULLETS; i++) enemy_bullets[i].active = false;
+                boss->current_phase = BOSS_PHASE_NONSPELL3; 
+                boss->frame_counter = 0;
+                boss->justChangedPhase = true; 
             }
             break;
     }
@@ -260,10 +444,18 @@ void DrawBoss(Boss *boss)
         int text_width = MeasureText(spell_name, 30);
         DrawText(spell_name, (800 - text_width) / 2, 60, 30, GOLD);
     }
+    else if (boss->current_phase == BOSS_PHASE_SPELL2)
+    {
+        const char *spell_name = "Taboo: Crimson Barrage";
+        int text_width = MeasureText(spell_name, 30);
+        DrawText(spell_name, (800 - text_width) / 2, 60, 30, GOLD);
+    }
 }
-
 void CheckPlayerVsBoss(Boss *boss, Bullet *player_bullets)
 {
+
+    if (boss->current_phase == BOSS_PHASE_DEFEATED) return;
+
     for (int i = 0; i < MAX_BULLETS; i++)
     {
         if (player_bullets[i].active)
@@ -284,7 +476,7 @@ void CheckPlayerVsBoss(Boss *boss, Bullet *player_bullets)
     }
 }
 
-void CheckBossVsPlayer(Player *player, EnemyBullet *enemy_bullets, int *currentScore)
+void CheckBossVsPlayer(Player *player, EnemyBullet *enemy_bullets, int *currentScore, ScorePopup *popups, GameScreen *current_screen)
 {
     if (player->is_invulnerable)
     {
@@ -302,21 +494,24 @@ void CheckBossVsPlayer(Player *player, EnemyBullet *enemy_bullets, int *currentS
         if (enemy_bullets[i].active)
         {
             float collisionDistance = HITBOX_RADIUS + enemy_bullets[i].radius;
-            float grazeDistance = collisionDistance + 3.0f; 
-            
+            float grazeDistance = collisionDistance + 30.0f; 
+
             float dist = Vector2Distance(player_center, enemy_bullets[i].position);
+
 
             if (dist < grazeDistance && dist >= collisionDistance && !enemy_bullets[i].hasBeenGrazed)
             {
-                *currentScore += 150; 
-                enemy_bullets[i].hasBeenGrazed = true; 
-                
+                *currentScore += 150;
+                enemy_bullets[i].hasBeenGrazed = true;
+                SpawnPopup(popups, player->position, "GRAZE!", RED, 20); 
             }
+
 
             if (dist < collisionDistance)
             {
-                LoseHealth(player);
-
+     
+                LoseHealth(player, current_screen);
+                
                 player->is_invulnerable = true;
                 player->invul_timer = INVULNERABILITY_TIME;
 
@@ -325,11 +520,12 @@ void CheckBossVsPlayer(Player *player, EnemyBullet *enemy_bullets, int *currentS
                     enemy_bullets[j].active = false;
                 }
 
-                return; 
+                return;
             }
         }
     }
 }
+
 void UnloadBoss(Boss *boss)
 {
     UnloadBossSprites(&boss->sprites);

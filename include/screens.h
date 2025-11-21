@@ -8,9 +8,11 @@ typedef enum
     MENU_SCREEN,
     GAME_SCREEN,
     CREDITS_SCREEN,
-    EXIT_SCREEN
+    EXIT_SCREEN,
+    GAMEOVER_SCREEN
 } GameScreen;
 
 GameScreen menu(Music menu_music, Texture2D background);
+GameScreen gameover(Texture2D background, Music menu_music);
 
 #endif
