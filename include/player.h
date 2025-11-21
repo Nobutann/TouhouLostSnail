@@ -13,9 +13,9 @@ typedef struct HealthNode {
     struct HealthNode *next;
 } HealthNode;
 
-typedef struct Bombs {
-    struct Bombs *next;
-} Bombs;
+typedef struct UltsNode {
+    struct UltsNode *next;
+} UltsNode;
 
 typedef struct
 {
@@ -25,7 +25,7 @@ typedef struct
     PlayerSprites sprites;
     Vector2 hitbox_center;
     float shoot_timer;
-    Bombs *bombs;
+    UltsNode *ults;
     bool is_invulnerable;
     float invul_timer;
 } Player;
@@ -37,8 +37,7 @@ void UnloadPlayer(Player *player);
 void PlayerShoot(Player *player, Bullet *bullets);
 void LoseHealth(Player *player, GameScreen *current_screen);
 void DrawHealths(Player *player);
-void LoseBombs(Player *player);
-void DrawBombs(Player *player);
-void InitBombProjectiles(BombProjectile *active_bombs, Vector2 startPos, Player *player);
+void LoseUlts(Player *player);
+void DrawUlts(Player *player);
 
 #endif

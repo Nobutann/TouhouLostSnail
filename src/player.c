@@ -18,7 +18,7 @@
 #define TOP_LIMIT -40
 
 HealthNode g_health1, g_health2, g_health3, g_health4;
-Bombs g_bomb1, g_bomb2, g_bomb3;
+UltsNode g_ult1, g_ult2, g_ult3;
 
 void InitPlayer(Player *player, Vector2 initial_pos, float speed)
 {
@@ -37,16 +37,16 @@ void InitPlayer(Player *player, Vector2 initial_pos, float speed)
 
     player->healths = &g_health1;
 
-    g_bomb1.next = &g_bomb2;
-    g_bomb2.next = &g_bomb3;
-    g_bomb3.next = NULL;
+    g_ult1.next = &g_ult2;
+    g_ult2.next = &g_ult3;
+    g_ult3.next = NULL;
 
-    player->bombs = &g_bomb1;
+    player->ults = &g_ult1;
 
     LoadPlayerSprites(&player->sprites);
 }
 
-void UpdatePlayer(Player *player, float dt, Bullet *bullets, Sound shoot_sound, BombProjectile *active_bombs)
+void UpdatePlayer(Player *player, float dt, Bullet *bullets, Sound shoot_sound)
 {
     if (player->is_invulnerable)
     {
@@ -103,10 +103,9 @@ void UpdatePlayer(Player *player, float dt, Bullet *bullets, Sound shoot_sound, 
 
     if (IsKeyPressed(KEY_R))
     {
-        if (player->bombs != NULL)
+        if (player->ults != NULL)
         {
-            InitBombProjectiles(active_bombs, player->position, player);
-            LoseBombs(player);
+            LoseUlts(player);
         }
     }
 
@@ -257,18 +256,18 @@ void DrawHealths(Player *player)
 
 
 
-void LoseBombs(Player *player)
+void LoseUlts(Player *player)
 {
-    if (player->bombs == NULL)
+    if (player->ults == NULL)
     {
         printf("Não possui mais bombas\n");
         return;
     }
 
-    player->bombs = player->bombs->next;
+    player->ults = player->ults->next;
 }
 
-void DrawBombs(Player *player)
+void DrawUlts(Player *player)
 {   
     int startX = 1016;
     int startY = 318;
@@ -276,7 +275,7 @@ void DrawBombs(Player *player)
     int spacing = 44;
 
     int bombs = 0;
-    Bombs *b = player->bombs;
+    UltsNode *b = player->ults;
 
     while (b != NULL)
     {
@@ -294,20 +293,3 @@ void DrawBombs(Player *player)
 }
 
 
-void InitBombProjectiles(BombProjectile *active_bombs, Vector2 startPos, Player *player)
-{
-    for (int i = 0; i < MAX_ACTIVE_BOMBS; i += 1)
-    {
-        if (!active_bombs[i].active)
-        {
-            active_bombs[i].active = true;
-            
-            float playerCenterX = player->position.x + player->sprites.idle.frames[0].width / 2.0f;
-            float playerCenterY = player->position.y + player->sprites.idle.frames[0].height / 2.0f;
-            
-            active_bombs[i].position = (Vector2){playerCenterX, playerCenterY - 40};
-            active_bombs[i].velocity = (Vector2){0, -BOMB_SPEED};
-            break;
-        }
-    }
-}
