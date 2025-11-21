@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "screens.h"
+#include "ult.h"
 
 #define FIRE_RATE 0.066f /* 15 tiros por segundo */
 #define BULLET_DISTANCE_X 8
@@ -17,8 +18,60 @@
 #define BOTTOM_LIMIT 650
 #define TOP_LIMIT -40
 
-HealthNode g_health1, g_health2, g_health3, g_health4;
-UltsNode g_ult1, g_ult2, g_ult3;
+
+void InitHealthList(Player *player)
+{
+    player->healths = NULL;
+
+    for (int i = 0; i < 4; i++)
+    {
+        HealthNode *newHealth = (HealthNode *)malloc(sizeof(HealthNode));
+        if (newHealth == NULL)
+        {
+            printf("Error: Failed to allocate memory for HealthNode\n");
+            return;
+        }
+        newHealth->next = NULL;
+
+        if (player->healths == NULL)
+        {
+            player->healths = newHealth;
+        }
+        else
+        {
+            HealthNode *temp = player->healths;
+            while (temp->next != NULL)
+            {
+                temp = temp->next;
+            }
+            temp->next = newHealth;
+        }
+    }
+}
+
+void RemoveHealth(Player *player)
+{
+    if (player->healths == NULL)
+    {
+        return;
+    }
+
+    HealthNode *toRemove = player->healths;
+    player->healths = player->healths->next;
+    free(toRemove);
+}
+
+void FreeHealthList(Player *player)
+{
+    HealthNode *current = player->healths;
+    while (current != NULL)
+    {
+        HealthNode *next = current->next;
+        free(current);
+        current = next;
+    }
+    player->healths = NULL;
+}
 
 void InitPlayer(Player *player, Vector2 initial_pos, float speed)
 {
@@ -29,19 +82,9 @@ void InitPlayer(Player *player, Vector2 initial_pos, float speed)
     player->shoot_timer = 0.0f;
     player->is_invulnerable = false;
     player->invul_timer = 0.0f;
-    
-    g_health1.next = &g_health2;
-    g_health2.next = &g_health3;
-    g_health3.next = &g_health4;
-    g_health4.next = NULL;
 
-    player->healths = &g_health1;
+    InitHealthList(player);
 
-    g_ult1.next = &g_ult2;
-    g_ult2.next = &g_ult3;
-    g_ult3.next = NULL;
-
-    player->ults = &g_ult1;
 
     LoadPlayerSprites(&player->sprites);
 }
@@ -103,10 +146,7 @@ void UpdatePlayer(Player *player, float dt, Bullet *bullets, Sound shoot_sound)
 
     if (IsKeyPressed(KEY_R))
     {
-        if (player->ults != NULL)
-        {
-            LoseUlts(player);
-        }
+        StartUltimate();
     }
 
     player->position.x += input.x * player->speed * dt;
@@ -213,6 +253,7 @@ void PlayerShoot(Player *player, Bullet *bullets)
 
 void UnloadPlayer(Player *player)
 {
+    FreeHealthList(player);
     UnloadPlayerSprites(&player->sprites);
 }
 
@@ -220,13 +261,13 @@ void UnloadPlayer(Player *player)
 
 void LoseHealth(Player *player, GameScreen *current_screen)
 {
-    if (player->healths == NULL) 
-    {   
+    if (player->healths == NULL)
+    {
         *current_screen = GAMEOVER_SCREEN;
         return;
     }
 
-    player->healths = player->healths->next;
+    RemoveHealth(player);
 }
 
 
@@ -254,42 +295,22 @@ void DrawHealths(Player *player)
     }
 }
 
-
-
-void LoseUlts(Player *player)
-{
-    if (player->ults == NULL)
-    {
-        printf("Não possui mais bombas\n");
-        return;
-    }
-
-    player->ults = player->ults->next;
-}
-
 void DrawUlts(Player *player)
-{   
+{
     int startX = 1016;
     int startY = 318;
     int radius = 17;
     int spacing = 44;
 
-    int bombs = 0;
-    UltsNode *b = player->ults;
+    int bombs = GetRemainingUlts();
 
-    while (b != NULL)
-    {
-        bombs += 1;
-        b = b->next;
-    }
-
-    for (int i = 0; i < 3; i += 1) 
+    for (int i = 0; i < 3; i += 1)
     {
         Color color = (i < bombs) ? BLACK : DARKGRAY;
 
         DrawCircle(startX + i * spacing, startY, radius, color);
     }
-    
+
 }
 
 

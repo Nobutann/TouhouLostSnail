@@ -8,8 +8,11 @@
 #define DEG2RAD (PI/180.0f)
 #define RAD2DEG (180.0f/PI)
 
+static Boss *g_boss = NULL;
+
 void InitBoss(Boss *boss, Vector2 initial_pos)
 {
+    g_boss = boss;
     boss->position = initial_pos;
     boss->target_position = initial_pos;
     boss->last_position = initial_pos;
@@ -553,4 +556,18 @@ void CheckBossVsPlayer(Player *player, EnemyBullet *enemy_bullets, GameScreen *c
 void UnloadBoss(Boss *boss)
 {
     UnloadBossSprites(&boss->sprites);
+}
+
+void BossTakeUltDamage(int damage)
+{
+    if (g_boss == NULL)
+    {
+        return;
+    }
+
+    g_boss->health -= damage;
+    if (g_boss->health < 0)
+    {
+        g_boss->health = 0;
+    }
 }

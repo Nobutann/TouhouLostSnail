@@ -1,19 +1,25 @@
 CC = gcc
 CFLAGS = -Wall -std=c99
 
-# Caminhos corretos da Raylib no SEU PC
+# Diretórios de include do seu projeto e da Raylib
+PROJECT_INCLUDE = include
 RAYLIB_INCLUDE = C:/Users/walti/raylib/include
+
+INCLUDES = -I$(PROJECT_INCLUDE) -I$(RAYLIB_INCLUDE)
+
+# Diretórios de libs da Raylib
 RAYLIB_LIB = C:/Users/walti/raylib/lib
+LIB_DIRS = -L$(RAYLIB_LIB)
 
-INCLUDES = -I $(RAYLIB_INCLUDE)
-LIB_DIRS = -L $(RAYLIB_LIB)
-
+# Bibliotecas necessárias no Windows
 LIBS = -lraylib -lopengl32 -lgdi32 -lwinmm
 
+# Diretórios do projeto
 SRC_DIR = src
 OBJ_DIR = obj
 BIN_DIR = bin
 
+# Detectar arquivos .c
 SRCS = $(wildcard $(SRC_DIR)/*.c)
 OBJS = $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRCS))
 TARGET = $(BIN_DIR)/game.exe

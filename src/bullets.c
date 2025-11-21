@@ -1,8 +1,14 @@
 #include "bullets.h"
 #include "raymath.h"
+#include <stddef.h>
+
+static Bullet *g_player_bullets = NULL;
+static EnemyBullet *g_enemy_bullets = NULL;
+static bool g_bullets_enabled = true;
 
 void InitBullet(Bullet *bullets, Texture2D sprite)
 {
+    g_player_bullets = bullets;
     for (int i = 0; i < MAX_BULLETS; i++)
     {
         bullets[i].active = false;
@@ -37,35 +43,9 @@ void DrawBullets(Bullet *bullets)
     }
 }
 
-void UpdateBombProjectiles(BombProjectile *active_bombs, float dt)
-{
-    for (int i = 0; i < MAX_ACTIVE_BOMBS; i += 1)
-    {
-        if (active_bombs[i].active)
-        {
-            active_bombs[i].position.y += active_bombs[i].velocity.y * dt;
-
-            if (active_bombs[i].position.y < -50)
-            {
-                active_bombs[i].active = false;
-            }
-        }
-    }
-}
-
-void DrawBombProjectiles(BombProjectile *active_bombs)
-{
-    for (int i = 0; i < MAX_ACTIVE_BOMBS; i += 1)
-    {
-        if (active_bombs[i].active)
-        {
-            DrawCircleV(active_bombs[i].position, 30, YELLOW);
-        }
-    }
-}
-
 void InitEnemyBullets(EnemyBullet *bullets)
 {
+    g_enemy_bullets = bullets;
     for (int i = 0; i < MAX_ENEMY_BULLETS; i++)
     {
         bullets[i].active = false;
@@ -75,6 +55,11 @@ void InitEnemyBullets(EnemyBullet *bullets)
 
 void SpawnEnemyBullet(EnemyBullet *bullets, Vector2 position, float angle, float speed, EnemyBulletType type, Texture2D sprite)
 {
+    if (!g_bullets_enabled)
+    {
+        return;
+    }
+
     for (int i = 0; i < MAX_ENEMY_BULLETS; i++)
     {
         if (!bullets[i].active)
@@ -140,4 +125,33 @@ void DrawEnemyBullets(EnemyBullet *bullets)
             DrawTexturePro(bullets[i].sprite, source, dest, origin, rotation_degrees, RAYWHITE);
         }
     }
+}
+
+void ClearAllBullets(void)
+{
+    if (g_player_bullets != NULL)
+    {
+        for (int i = 0; i < MAX_BULLETS; i++)
+        {
+            g_player_bullets[i].active = false;
+        }
+    }
+
+    if (g_enemy_bullets != NULL)
+    {
+        for (int i = 0; i < MAX_ENEMY_BULLETS; i++)
+        {
+            g_enemy_bullets[i].active = false;
+        }
+    }
+}
+
+void DisableBullets(void)
+{
+    g_bullets_enabled = false;
+}
+
+void EnableBullets(void)
+{
+    g_bullets_enabled = true;
 }
