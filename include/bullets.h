@@ -8,6 +8,18 @@
 #define MAX_ENEMY_BULLETS 1000
 #define PLAYER_BULLET_HITBOX 8.0f
 
+#define MAX_POPUPS 50
+
+typedef struct
+{
+    Vector2 position;
+    char text[32];
+    float lifetime;     
+    float max_lifetime; 
+    Color color;
+    bool active;
+    float fontSize;
+} ScorePopup;
 
 typedef struct
 {
@@ -36,6 +48,7 @@ typedef struct
     float lifetime;
     bool active;
     float radius;
+    bool hasBeenGrazed;
 } EnemyBullet;
 
 void InitBullet(Bullet *bullets, Texture2D sprite);
@@ -47,8 +60,9 @@ void SpawnEnemyBullet(EnemyBullet *bullets, Vector2 position, float angle, float
 void UpdateEnemyBullets(EnemyBullet *bullets, float dt);
 void DrawEnemyBullets(EnemyBullet *bullets);
 
-void ClearAllBullets(void);
-void DisableBullets(void);
-void EnableBullets(void);
+void InitPopups(ScorePopup *popups);
+void SpawnPopup(ScorePopup *popups, Vector2 pos, const char *text, Color color, float size);
+void UpdatePopups(ScorePopup *popups, float dt);
+void DrawPopups(ScorePopup *popups);
 
 #endif
