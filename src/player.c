@@ -144,7 +144,7 @@ void UpdatePlayer(Player *player, float dt, Bullet *bullets, Sound shoot_sound)
         PlaySound(shoot_sound);
     }
 
-    if (IsKeyPressed(KEY_R))
+    if (IsKeyPressed(KEY_X))
     {
         StartUltimate();
     }
