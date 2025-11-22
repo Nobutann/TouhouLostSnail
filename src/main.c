@@ -3,28 +3,8 @@
 #include "screens.h"
 #include "bullets.h"
 #include "boss.h"
-#include <stdio.h> 
 #include "ult.h"
 
-#define HIGHSCORE_FILE "highscore.txt"
-
-int LoadHighScore()
-{
-    int highScore = 0;
-    FILE *file = fopen(HIGHSCORE_FILE, "r");
-    if (file == NULL) return 0;
-    fscanf(file, "%d", &highScore);
-    fclose(file);
-    return highScore;
-}
-
-void SaveHighScore(int score)
-{
-    FILE *file = fopen(HIGHSCORE_FILE, "w");
-    if (file == NULL) { printf("ERRO: Salvar High Score\n"); return; }
-    fprintf(file, "%d", score);
-    fclose(file);
-}
 
 int main(void)
 {
@@ -60,19 +40,9 @@ int main(void)
             StopMusicStream(menu_music);
             PlayMusicStream(game_music);
 
-            int currentScore = 0;
-            int highScore = LoadHighScore();
-            float scoreTimer = 0.0f;
-            float scoreInterval = 0.1f; 
-            int pointsPerInterval = 10; 
-
-            ScorePopup popups[MAX_POPUPS];
-            InitPopups(popups);
-
             Player player;
             Bullet bullets[MAX_BULLETS];
 
-            for (int i = 0; i < MAX_ACTIVE_BOMBS; i += 1) active_bombs[i].active = false;
             
             Boss flandre;
             EnemyBullet enemy_bullets[MAX_ENEMY_BULLETS];
@@ -119,52 +89,51 @@ int main(void)
                 UpdateMusicStream(game_music);
                 float dt = GetFrameTime();
 
-                if (IsKeyPressed(KEY_ESCAPE)) is_paused = !is_paused;
+                if (IsKeyPressed(KEY_ESCAPE))
+                {
+                    is_paused = !is_paused;
+                }
                 
                 if (is_paused)
                 {
-                    if (IsKeyPressed(KEY_UP)) selected--;
-                    if (IsKeyPressed(KEY_DOWN)) selected++;
-                    if (selected < 0) selected = 1;
-                    if (selected > 1) selected = 0;
+                    if (IsKeyPressed(KEY_UP))
+                    {
+                        selected--;
+                    }
+                    if (IsKeyPressed(KEY_DOWN))
+                    {
+                        selected++;
+                    }
+                    if (selected < 0)
+                    {
+                        selected = 1;
+                    }
+                    if (selected > 1)
+                    {
+                        selected = 0;
+                    }
 
                     if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_Z))
                     {
-                        if (selected == 0) { is_paused = false; selected = 0; }
-                        else if (selected == 1) { game_running = false; current_screen = MENU_SCREEN; }
+                        if (selected == 0)
+                        {
+                            is_paused = false;
+                            selected = 0;
+                        }
+                        else if (selected == 1)
+                        {
+                            game_running = false;
+                            current_screen = MENU_SCREEN;
+                        }
                     }
                 }
 
                 if (!is_paused)
                 {
-                    scoreTimer += dt;
-                    if (scoreTimer >= scoreInterval)
-                    {
-                        currentScore += pointsPerInterval;
-                        scoreTimer -= scoreInterval; 
-                    }
-                    if (currentScore > highScore) highScore = currentScore;
-
-                    UpdatePlayer(&player, dt, bullets, shoot_sound, active_bombs);
                     UpdatePlayer(&player, dt, bullets, shoot_sound);
                     UpdateBoss(&flandre, dt, enemy_bullets, player.position, &boss_assets);
-
-                    if (flandre.justChangedPhase)
-                    {
-                        currentScore += 50000; 
-                        flandre.justChangedPhase = false; 
-                        SpawnPopup(popups, (Vector2){400, 300}, "PHASE CLEAR! +50000", GOLD, 30);
-                    }
-
                     UpdateBullets(bullets, dt);
                     UpdateEnemyBullets(enemy_bullets, dt);
-                    UpdateBombProjectiles(active_bombs, dt);
-                    
-                    UpdatePopups(popups, dt);
-
-                    CheckPlayerVsBoss(&flandre, bullets);
-                    
-                    CheckBossVsPlayer(&player, enemy_bullets, &currentScore, popups, &current_screen);
                     UpdateUltimate(dt);
                     GameScreen *screen_pointer = &current_screen;
                     CheckPlayerVsBoss(&flandre, bullets);
@@ -180,8 +149,6 @@ int main(void)
                     ClearBackground(RAYWHITE);
                     Vector2 map_pos = {0, 0};
                     DrawAnimationFrame(&map, map_pos, 1.0f, WHITE);
-                    if (!is_paused) UpdateAnimation(&map, dt);
-                    
                     if (!is_paused)
                     {
                         UpdateAnimation(&map, dt);
@@ -191,15 +158,6 @@ int main(void)
                     DrawBoss(&flandre);
                     DrawEnemyBullets(enemy_bullets);
                     DrawBullets(bullets);
-                    DrawBombProjectiles(active_bombs);
-                    
-                    DrawPopups(popups); 
-
-                    DrawHealths(&player);
-                    DrawBombs(&player);
-
-                    DrawText(TextFormat("SCORE: %010d", currentScore), 850, 20, 30, WHITE);
-                    DrawText(TextFormat("HIGH:  %010d", highScore), 850, 60, 30, LIGHTGRAY);
                     DrawUltimate();
                     DrawHealths(&player);
                     DrawUlts(&player);
@@ -208,16 +166,23 @@ int main(void)
                     {
                         Vector2 menu_pos;
                         Texture2D menu_text;
-                        if (selected == 0) menu_text = pause_menu1;
-                        else menu_text = pause_menu2;
+
+                        if (selected == 0)
+                        {
+                            menu_text = pause_menu1;
+                        }
+                        else
+                        {
+                            menu_text = pause_menu2;
+                        }
+
                         menu_pos.x = (float)(GetScreenWidth() - menu_text.width) / 2;
                         menu_pos.y = (float)(GetScreenHeight() - menu_text.height) / 2;
+                        
                         DrawTexture(menu_text, menu_pos.x, menu_pos.y, RAYWHITE);
                     }
                 EndDrawing();
             }
-
-            SaveHighScore(highScore);
 
             StopMusicStream(game_music);
             UnloadPlayer(&player);
