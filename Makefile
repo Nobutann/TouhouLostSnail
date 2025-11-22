@@ -19,10 +19,9 @@ SRC_DIR = src
 OBJ_DIR = obj
 BIN_DIR = bin
 
-# Detectar arquivos .c
 SRCS = $(wildcard $(SRC_DIR)/*.c)
 OBJS = $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRCS))
-TARGET = $(BIN_DIR)/game.exe
+TARGET = $(BIN_DIR)/game
 
 all: $(TARGET)
 
@@ -43,4 +42,6 @@ run: $(TARGET)
 
 clean:
 	rm -f $(OBJ_DIR)/*.o
-	rm -f $(BIN_DIR)/*.exe
+	rm -f $(BIN_DIR)/game
+
+.PHONY: all run clean
