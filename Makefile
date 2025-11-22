@@ -1,20 +1,13 @@
 CC = gcc
 CFLAGS = -Wall -std=c99
 
-# Diretórios de include do seu projeto e da Raylib
-PROJECT_INCLUDE = include
-RAYLIB_INCLUDE = C:/Users/walti/raylib/include
+INCLUDE_DIR = include
+RAYLIB_INCLUDE = /usr/include
+INCLUDES = -I $(INCLUDE_DIR) -I $(RAYLIB_INCLUDE)
 
-INCLUDES = -I$(PROJECT_INCLUDE) -I$(RAYLIB_INCLUDE)
+LIB_DIRS = -L /usr/lib
+LIBS = -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
 
-# Diretórios de libs da Raylib
-RAYLIB_LIB = C:/Users/walti/raylib/lib
-LIB_DIRS = -L$(RAYLIB_LIB)
-
-# Bibliotecas necessárias no Windows
-LIBS = -lraylib -lopengl32 -lgdi32 -lwinmm
-
-# Diretórios do projeto
 SRC_DIR = src
 OBJ_DIR = obj
 BIN_DIR = bin
