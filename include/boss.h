@@ -21,10 +21,6 @@ typedef enum
     BOSS_PHASE_SPELL1,
     BOSS_PHASE_NONSPELL2,
     BOSS_PHASE_SPELL2,
-    BOSS_PHASE_NONSPELL3,
-    BOSS_PHASE_SPELL3,
-    BOSS_PHASE_NONSPELL4,
-    BOSS_PHASE_SPELL4,
     BOSS_PHASE_DEFEATED
 } BossPhase;
 
@@ -54,5 +50,9 @@ void CheckBossVsPlayer(Player *player, EnemyBullet *enemy_bullets, int *currentS
 
 void NonSpell1(Boss *boss, EnemyBullet *enemy_bullets, Vector2 player_pos, BossAssets *assets);
 void SpellCard1(Boss *boss, EnemyBullet *enemy_bullets, Vector2 player_pos, BossAssets *assets);
+void SpellCard2(Boss *boss, EnemyBullet *enemy_bullets, Vector2 player_pos, BossAssets *assets);
+void NonSpell2(Boss *boss, EnemyBullet *enemy_bullets, Vector2 player_pos, BossAssets *assets);
+
+void BossTakeUltDamage(int damage);
 
 #endif

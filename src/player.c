@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "screens.h"
+#include "ult.h"
 
 #define FIRE_RATE 0.066f /* 15 tiros por segundo */
 #define BULLET_DISTANCE_X 8
@@ -17,8 +18,60 @@
 #define BOTTOM_LIMIT 650
 #define TOP_LIMIT -40
 
-HealthNode g_health1, g_health2, g_health3, g_health4;
-Bombs g_bomb1, g_bomb2, g_bomb3;
+
+void InitHealthList(Player *player)
+{
+    player->healths = NULL;
+
+    for (int i = 0; i < 4; i++)
+    {
+        HealthNode *newHealth = (HealthNode *)malloc(sizeof(HealthNode));
+        if (newHealth == NULL)
+        {
+            printf("Error: Failed to allocate memory for HealthNode\n");
+            return;
+        }
+        newHealth->next = NULL;
+
+        if (player->healths == NULL)
+        {
+            player->healths = newHealth;
+        }
+        else
+        {
+            HealthNode *temp = player->healths;
+            while (temp->next != NULL)
+            {
+                temp = temp->next;
+            }
+            temp->next = newHealth;
+        }
+    }
+}
+
+void RemoveHealth(Player *player)
+{
+    if (player->healths == NULL)
+    {
+        return;
+    }
+
+    HealthNode *toRemove = player->healths;
+    player->healths = player->healths->next;
+    free(toRemove);
+}
+
+void FreeHealthList(Player *player)
+{
+    HealthNode *current = player->healths;
+    while (current != NULL)
+    {
+        HealthNode *next = current->next;
+        free(current);
+        current = next;
+    }
+    player->healths = NULL;
+}
 
 void InitPlayer(Player *player, Vector2 initial_pos, float speed)
 {
@@ -29,24 +82,14 @@ void InitPlayer(Player *player, Vector2 initial_pos, float speed)
     player->shoot_timer = 0.0f;
     player->is_invulnerable = false;
     player->invul_timer = 0.0f;
-    
-    g_health1.next = &g_health2;
-    g_health2.next = &g_health3;
-    g_health3.next = &g_health4;
-    g_health4.next = NULL;
 
-    player->healths = &g_health1;
+    InitHealthList(player);
 
-    g_bomb1.next = &g_bomb2;
-    g_bomb2.next = &g_bomb3;
-    g_bomb3.next = NULL;
-
-    player->bombs = &g_bomb1;
 
     LoadPlayerSprites(&player->sprites);
 }
 
-void UpdatePlayer(Player *player, float dt, Bullet *bullets, Sound shoot_sound, BombProjectile *active_bombs)
+void UpdatePlayer(Player *player, float dt, Bullet *bullets, Sound shoot_sound)
 {
     if (player->is_invulnerable)
     {
@@ -101,13 +144,9 @@ void UpdatePlayer(Player *player, float dt, Bullet *bullets, Sound shoot_sound, 
         PlaySound(shoot_sound);
     }
 
-    if (IsKeyPressed(KEY_R))
+    if (IsKeyPressed(KEY_X))
     {
-        if (player->bombs != NULL)
-        {
-            InitBombProjectiles(active_bombs, player->position, player);
-            LoseBombs(player);
-        }
+        StartUltimate();
     }
 
     player->position.x += input.x * player->speed * dt;
@@ -214,6 +253,7 @@ void PlayerShoot(Player *player, Bullet *bullets)
 
 void UnloadPlayer(Player *player)
 {
+    FreeHealthList(player);
     UnloadPlayerSprites(&player->sprites);
 }
 
@@ -221,13 +261,13 @@ void UnloadPlayer(Player *player)
 
 void LoseHealth(Player *player, GameScreen *current_screen)
 {
-    if (player->healths == NULL) 
-    {   
+    if (player->healths == NULL)
+    {
         *current_screen = GAMEOVER_SCREEN;
         return;
     }
 
-    player->healths = player->healths->next;
+    RemoveHealth(player);
 }
 
 
@@ -255,59 +295,22 @@ void DrawHealths(Player *player)
     }
 }
 
-
-
-void LoseBombs(Player *player)
+void DrawUlts(Player *player)
 {
-    if (player->bombs == NULL)
-    {
-        printf("Não possui mais bombas\n");
-        return;
-    }
-
-    player->bombs = player->bombs->next;
-}
-
-void DrawBombs(Player *player)
-{   
     int startX = 1016;
     int startY = 318;
     int radius = 17;
     int spacing = 44;
 
-    int bombs = 0;
-    Bombs *b = player->bombs;
+    int bombs = GetRemainingUlts();
 
-    while (b != NULL)
-    {
-        bombs += 1;
-        b = b->next;
-    }
-
-    for (int i = 0; i < 3; i += 1) 
+    for (int i = 0; i < 3; i += 1)
     {
         Color color = (i < bombs) ? BLACK : DARKGRAY;
 
         DrawCircle(startX + i * spacing, startY, radius, color);
     }
-    
+
 }
 
 
-void InitBombProjectiles(BombProjectile *active_bombs, Vector2 startPos, Player *player)
-{
-    for (int i = 0; i < MAX_ACTIVE_BOMBS; i += 1)
-    {
-        if (!active_bombs[i].active)
-        {
-            active_bombs[i].active = true;
-            
-            float playerCenterX = player->position.x + player->sprites.idle.frames[0].width / 2.0f;
-            float playerCenterY = player->position.y + player->sprites.idle.frames[0].height / 2.0f;
-            
-            active_bombs[i].position = (Vector2){playerCenterX, playerCenterY - 40};
-            active_bombs[i].velocity = (Vector2){0, -BOMB_SPEED};
-            break;
-        }
-    }
-}

@@ -4,6 +4,7 @@
 #include "bullets.h"
 #include "boss.h"
 #include <stdio.h> 
+#include "ult.h"
 
 #define HIGHSCORE_FILE "highscore.txt"
 
@@ -37,8 +38,11 @@ int main(void)
     Sound shoot_sound = LoadSound("assets/sounds/player_sounds/playerattack.wav");
     SetSoundVolume(shoot_sound, 0.02f);
     Music menu_music = LoadMusicStream("assets/sounds/musics/menumusic/menumusic.mp3");
+    Music game_music = LoadMusicStream("assets/sounds/musics/gamemusic/game_music.mp3");
+    SetMusicVolume(game_music, 0.1f);
 
     Texture2D menu_background = LoadTexture("assets/sprites/menu/menu.png");
+    Texture2D gameover_background = LoadTexture("assets/sprites/menu/gameover.png");
 
     while (current_screen != EXIT_SCREEN && !WindowShouldClose())
     {
@@ -54,6 +58,7 @@ int main(void)
             int selected = 0;
 
             StopMusicStream(menu_music);
+            PlayMusicStream(game_music);
 
             int currentScore = 0;
             int highScore = LoadHighScore();
@@ -66,7 +71,6 @@ int main(void)
 
             Player player;
             Bullet bullets[MAX_BULLETS];
-            BombProjectile active_bombs[MAX_ACTIVE_BOMBS];
 
             for (int i = 0; i < MAX_ACTIVE_BOMBS; i += 1) active_bombs[i].active = false;
             
@@ -81,6 +85,7 @@ int main(void)
 
             InitBoss(&flandre, (Vector2){400, 100});
             InitEnemyBullets(enemy_bullets);
+            InitUltimate();
             
             Texture2D bullet_red = LoadTexture("assets/sprites/bullets/bullet_small_red.png");
             Texture2D bullet_pink = LoadTexture("assets/sprites/bullets/bullet_small_pink.png");
@@ -111,6 +116,7 @@ int main(void)
 
             while (game_running && !WindowShouldClose())
             {
+                UpdateMusicStream(game_music);
                 float dt = GetFrameTime();
 
                 if (IsKeyPressed(KEY_ESCAPE)) is_paused = !is_paused;
@@ -140,6 +146,7 @@ int main(void)
                     if (currentScore > highScore) highScore = currentScore;
 
                     UpdatePlayer(&player, dt, bullets, shoot_sound, active_bombs);
+                    UpdatePlayer(&player, dt, bullets, shoot_sound);
                     UpdateBoss(&flandre, dt, enemy_bullets, player.position, &boss_assets);
 
                     if (flandre.justChangedPhase)
@@ -158,6 +165,15 @@ int main(void)
                     CheckPlayerVsBoss(&flandre, bullets);
                     
                     CheckBossVsPlayer(&player, enemy_bullets, &currentScore, popups, &current_screen);
+                    UpdateUltimate(dt);
+                    GameScreen *screen_pointer = &current_screen;
+                    CheckPlayerVsBoss(&flandre, bullets);
+                    CheckBossVsPlayer(&player, enemy_bullets, screen_pointer);
+
+                    if (current_screen == GAMEOVER_SCREEN)
+                    {
+                        game_running = false;
+                    }
                 }
                 
                 BeginDrawing();
@@ -166,6 +182,11 @@ int main(void)
                     DrawAnimationFrame(&map, map_pos, 1.0f, WHITE);
                     if (!is_paused) UpdateAnimation(&map, dt);
                     
+                    if (!is_paused)
+                    {
+                        UpdateAnimation(&map, dt);
+                    }
+
                     DrawPlayer(&player);
                     DrawBoss(&flandre);
                     DrawEnemyBullets(enemy_bullets);
@@ -179,6 +200,9 @@ int main(void)
 
                     DrawText(TextFormat("SCORE: %010d", currentScore), 850, 20, 30, WHITE);
                     DrawText(TextFormat("HIGH:  %010d", highScore), 850, 60, 30, LIGHTGRAY);
+                    DrawUltimate();
+                    DrawHealths(&player);
+                    DrawUlts(&player);
 
                     if (is_paused)
                     {
@@ -195,8 +219,10 @@ int main(void)
 
             SaveHighScore(highScore);
 
+            StopMusicStream(game_music);
             UnloadPlayer(&player);
             UnloadBoss(&flandre);
+            UnloadUltimate();
             UnloadTexture(bullet_sprite);
             UnloadMapSprites(&map);
             UnloadTexture(bullet_red);
@@ -210,11 +236,22 @@ int main(void)
             UnloadTexture(pause_menu1);
             UnloadTexture(pause_menu2);
         }
+
+        else if (current_screen == GAMEOVER_SCREEN)
+        {
+            PlayMusicStream(menu_music);
+            current_screen = gameover(gameover_background, menu_music);
+
+            BeginDrawing();
+            EndDrawing();
+        }
     }
 
     UnloadSound(shoot_sound);
     UnloadMusicStream(menu_music);
+    UnloadMusicStream(game_music);
     UnloadTexture(menu_background);
+    UnloadTexture(gameover_background);
 
     CloseAudioDevice();
     CloseWindow();
