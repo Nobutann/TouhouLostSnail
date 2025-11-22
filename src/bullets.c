@@ -1,5 +1,71 @@
 #include "bullets.h"
 #include "raymath.h"
+#include <string.h> 
+#include <stdio.h>
+
+
+void InitPopups(ScorePopup *popups)
+{
+    for (int i = 0; i < MAX_POPUPS; i++)
+    {
+        popups[i].active = false;
+        popups[i].text[0] = '\0';
+    }
+}
+
+void SpawnPopup(ScorePopup *popups, Vector2 pos, const char *text, Color color, float size)
+{
+    for (int i = 0; i < MAX_POPUPS; i++)
+    {
+        if (!popups[i].active)
+        {
+            popups[i].position = pos;
+            
+            strcpy(popups[i].text, text);
+            
+            popups[i].color = color;
+            popups[i].active = true;
+            popups[i].lifetime = 1.5f;     
+            popups[i].max_lifetime = 1.5f;
+            popups[i].fontSize = size;
+            return;
+        }
+    }
+}
+
+void UpdatePopups(ScorePopup *popups, float dt)
+{
+    for (int i = 0; i < MAX_POPUPS; i++)
+    {
+        if (popups[i].active)
+        {
+            popups[i].lifetime -= dt;
+            popups[i].position.y -= 60.0f * dt;
+
+            if (popups[i].lifetime <= 0)
+            {
+                popups[i].active = false;
+            }
+        }
+    }
+}
+
+void DrawPopups(ScorePopup *popups)
+{
+    for (int i = 0; i < MAX_POPUPS; i++)
+    {
+        if (popups[i].active)
+        {
+       
+            DrawText(popups[i].text, (int)popups[i].position.x + 2, (int)popups[i].position.y + 2, (int)popups[i].fontSize, BLACK);
+            
+         
+            DrawText(popups[i].text, (int)popups[i].position.x, (int)popups[i].position.y, (int)popups[i].fontSize, popups[i].color);
+        }
+    }
+}
+
+
 #include <stddef.h>
 
 static Bullet *g_player_bullets = NULL;
@@ -73,6 +139,7 @@ void SpawnEnemyBullet(EnemyBullet *bullets, Vector2 position, float angle, float
             bullets[i].active = true;
             bullets[i].sprite = sprite;
             bullets[i].lifetime = 0.0f;
+            bullets[i].hasBeenGrazed = false; 
             break;
         }
     }
