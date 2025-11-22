@@ -3,6 +3,7 @@
 #include "screens.h"
 #include "bullets.h"
 #include "boss.h"
+#include "ult.h"
 
 
 int main(void)
@@ -41,12 +42,7 @@ int main(void)
 
             Player player;
             Bullet bullets[MAX_BULLETS];
-            BombProjectile active_bombs[MAX_ACTIVE_BOMBS];
 
-            for (int i = 0; i < MAX_ACTIVE_BOMBS; i += 1)
-            {
-                active_bombs[i].active = false;
-            }
             
             Boss flandre;
             EnemyBullet enemy_bullets[MAX_ENEMY_BULLETS];
@@ -59,6 +55,7 @@ int main(void)
 
             InitBoss(&flandre, (Vector2){400, 100});
             InitEnemyBullets(enemy_bullets);
+            InitUltimate();
             
             Texture2D bullet_red = LoadTexture("assets/sprites/bullets/bullet_small_red.png");
             Texture2D bullet_pink = LoadTexture("assets/sprites/bullets/bullet_small_pink.png");
@@ -133,11 +130,11 @@ int main(void)
 
                 if (!is_paused)
                 {
-                    UpdatePlayer(&player, dt, bullets, shoot_sound, active_bombs);
+                    UpdatePlayer(&player, dt, bullets, shoot_sound);
                     UpdateBoss(&flandre, dt, enemy_bullets, player.position, &boss_assets);
                     UpdateBullets(bullets, dt);
                     UpdateEnemyBullets(enemy_bullets, dt);
-                    UpdateBombProjectiles(active_bombs, dt);
+                    UpdateUltimate(dt);
                     GameScreen *screen_pointer = &current_screen;
                     CheckPlayerVsBoss(&flandre, bullets);
                     CheckBossVsPlayer(&player, enemy_bullets, screen_pointer);
@@ -156,13 +153,15 @@ int main(void)
                     {
                         UpdateAnimation(&map, dt);
                     }
+
                     DrawPlayer(&player);
                     DrawBoss(&flandre);
                     DrawEnemyBullets(enemy_bullets);
                     DrawBullets(bullets);
-                    DrawBombProjectiles(active_bombs);
+                    DrawUltimate();
                     DrawHealths(&player);
-                    DrawBombs(&player);
+                    DrawUlts(&player);
+
                     if (is_paused)
                     {
                         Vector2 menu_pos;
@@ -188,6 +187,7 @@ int main(void)
             StopMusicStream(game_music);
             UnloadPlayer(&player);
             UnloadBoss(&flandre);
+            UnloadUltimate();
             UnloadTexture(bullet_sprite);
             UnloadMapSprites(&map);
             UnloadTexture(bullet_red);

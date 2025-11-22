@@ -50,4 +50,6 @@ void SpellCard1(Boss *boss, EnemyBullet *enemy_bullets, Vector2 player_pos, Boss
 void SpellCard2(Boss *boss, EnemyBullet *enemy_bullets, Vector2 player_pos, BossAssets *assets);
 void NonSpell2(Boss *boss, EnemyBullet *enemy_bullets, Vector2 player_pos, BossAssets *assets);
 
+void BossTakeUltDamage(int damage);
+
 #endif
