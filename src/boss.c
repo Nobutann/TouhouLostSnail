@@ -19,12 +19,12 @@ void InitBoss(Boss *boss, Vector2 initial_pos)
     boss->frame_counter = 0;
     boss->move_timer = 0.0f;
     boss->is_moving = false;
-    boss->justChangedPhase = false; 
+    boss->justChangedPhase = false; // Importante para o bônus inicial não disparar errado
 
     LoadBossSprites(&boss->sprites);
 }
 
-
+// --- FASES DO BOSS (RESTAURADAS) ---
 
 void NonSpell1(Boss *boss, EnemyBullet *enemy_bullets, Vector2 player_pos, BossAssets *assets)
 {
@@ -307,6 +307,7 @@ void SpellCard2(Boss *boss, EnemyBullet *enemy_bullets, Vector2 player_pos, Boss
     }
 }
 
+// --- LÓGICA DE ATUALIZAÇÃO (COM BÔNUS DE FASE) ---
 
 void UpdateBoss(Boss *boss, float dt, EnemyBullet *enemy_bullets, Vector2 player_pos, BossAssets *assets)
 {
@@ -322,7 +323,7 @@ void UpdateBoss(Boss *boss, float dt, EnemyBullet *enemy_bullets, Vector2 player
                 boss->frame_counter = 0;
                 boss->health = BOSS_HEALTH_SPELL1;
                 boss->max_health = BOSS_HEALTH_SPELL1;
-                boss->justChangedPhase = true; 
+                boss->justChangedPhase = true; // BÔNUS AQUI
             }
             break;
 
@@ -335,7 +336,7 @@ void UpdateBoss(Boss *boss, float dt, EnemyBullet *enemy_bullets, Vector2 player
                 boss->frame_counter = 0;
                 boss->health = BOSS_HEALTH_NONSPELL2;
                 boss->max_health = BOSS_HEALTH_NONSPELL2;
-                boss->justChangedPhase = true; 
+                boss->justChangedPhase = true; // BÔNUS AQUI
             }
             break;
         
@@ -348,7 +349,7 @@ void UpdateBoss(Boss *boss, float dt, EnemyBullet *enemy_bullets, Vector2 player
                 boss->frame_counter = 0;
                 boss->health = BOSS_HEALTH_SPELL2;
                 boss->max_health = BOSS_HEALTH_SPELL2;
-                boss->justChangedPhase = true; 
+                boss->justChangedPhase = true; // BÔNUS AQUI
             }
             break;
 
@@ -357,9 +358,9 @@ void UpdateBoss(Boss *boss, float dt, EnemyBullet *enemy_bullets, Vector2 player
             if (boss->health <= 0)
             {
                 for (int i = 0; i < MAX_ENEMY_BULLETS; i++) enemy_bullets[i].active = false;
-                boss->current_phase = BOSS_PHASE_NONSPELL3; 
+                boss->current_phase = BOSS_PHASE_NONSPELL3; // Se tiver NONSPELL3, mude aqui
                 boss->frame_counter = 0;
-                boss->justChangedPhase = true; 
+                boss->justChangedPhase = true; // BÔNUS AQUI
             }
             break;
     }
@@ -453,7 +454,7 @@ void DrawBoss(Boss *boss)
 }
 void CheckPlayerVsBoss(Boss *boss, Bullet *player_bullets)
 {
-
+    // Se o boss já foi derrotado, não leva dano
     if (boss->current_phase == BOSS_PHASE_DEFEATED) return;
 
     for (int i = 0; i < MAX_BULLETS; i++)
@@ -498,7 +499,7 @@ void CheckBossVsPlayer(Player *player, EnemyBullet *enemy_bullets, int *currentS
 
             float dist = Vector2Distance(player_center, enemy_bullets[i].position);
 
-
+            // 1. GRAZE
             if (dist < grazeDistance && dist >= collisionDistance && !enemy_bullets[i].hasBeenGrazed)
             {
                 *currentScore += 150;
@@ -506,10 +507,10 @@ void CheckBossVsPlayer(Player *player, EnemyBullet *enemy_bullets, int *currentS
                 SpawnPopup(popups, player->position, "GRAZE!", RED, 20); 
             }
 
-
+            // 2. COLISÃO
             if (dist < collisionDistance)
             {
-     
+                // <<< AQUI ESTAVA O ERRO: Agora passamos current_screen >>>
                 LoseHealth(player, current_screen);
                 
                 player->is_invulnerable = true;

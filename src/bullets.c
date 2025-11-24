@@ -1,8 +1,9 @@
 #include "bullets.h"
 #include "raymath.h"
-#include <string.h> 
+#include <string.h> // Importante para strcpy
 #include <stdio.h>
 
+// --- IMPLEMENTAÇÃO DE POPUPS ---
 
 void InitPopups(ScorePopup *popups)
 {
@@ -21,6 +22,7 @@ void SpawnPopup(ScorePopup *popups, Vector2 pos, const char *text, Color color, 
         {
             popups[i].position = pos;
             
+            // Copia o texto para dentro da estrutura
             strcpy(popups[i].text, text);
             
             popups[i].color = color;
@@ -40,7 +42,7 @@ void UpdatePopups(ScorePopup *popups, float dt)
         if (popups[i].active)
         {
             popups[i].lifetime -= dt;
-            popups[i].position.y -= 60.0f * dt;
+            popups[i].position.y -= 60.0f * dt; // Texto sobe
 
             if (popups[i].lifetime <= 0)
             {
@@ -56,16 +58,16 @@ void DrawPopups(ScorePopup *popups)
     {
         if (popups[i].active)
         {
-       
+            // Desenha uma sombra preta para garantir que dê para ler
             DrawText(popups[i].text, (int)popups[i].position.x + 2, (int)popups[i].position.y + 2, (int)popups[i].fontSize, BLACK);
             
-         
+            // Desenha o texto colorido
             DrawText(popups[i].text, (int)popups[i].position.x, (int)popups[i].position.y, (int)popups[i].fontSize, popups[i].color);
         }
     }
 }
 
-
+// --- FIM POPUPS ---
 
 void InitBullet(Bullet *bullets, Texture2D sprite)
 {
@@ -154,7 +156,7 @@ void SpawnEnemyBullet(EnemyBullet *bullets, Vector2 position, float angle, float
             bullets[i].active = true;
             bullets[i].sprite = sprite;
             bullets[i].lifetime = 0.0f;
-            bullets[i].hasBeenGrazed = false; 
+            bullets[i].hasBeenGrazed = false; // <<< Garante que começa falso
             break;
         }
     }

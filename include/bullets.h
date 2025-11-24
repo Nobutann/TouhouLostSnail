@@ -10,6 +10,7 @@
 #define MAX_ENEMY_BULLETS 1000
 #define PLAYER_BULLET_HITBOX 8.0f
 
+// --- SISTEMA DE POPUPS ---
 #define MAX_POPUPS 50
 
 typedef struct
@@ -22,6 +23,7 @@ typedef struct
     bool active;
     float fontSize;
 } ScorePopup;
+// -------------------------
 
 typedef struct
 {
@@ -72,6 +74,7 @@ void SpawnEnemyBullet(EnemyBullet *bullets, Vector2 position, float angle, float
 void UpdateEnemyBullets(EnemyBullet *bullets, float dt);
 void DrawEnemyBullets(EnemyBullet *bullets);
 
+// Funções de Popup
 void InitPopups(ScorePopup *popups);
 void SpawnPopup(ScorePopup *popups, Vector2 pos, const char *text, Color color, float size);
 void UpdatePopups(ScorePopup *popups, float dt);

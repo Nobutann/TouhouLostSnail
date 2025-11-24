@@ -5,7 +5,7 @@
 #include "sprite.h"
 #include "bullets.h"
 #include "player.h"
-#include "screens.h" 
+#include "screens.h" // <<< ADICIONE ISTO
 
 #define BOSS_HEALTH_NONSPELL1 3000.0f
 #define BOSS_HEALTH_SPELL1 4500.0f
@@ -50,6 +50,7 @@ void UnloadBoss(Boss *boss);
 
 void CheckPlayerVsBoss(Boss *boss, Bullet *player_bullets);
 
+// <<< ATUALIZADO: Adicionado GameScreen *current_screen >>>
 void CheckBossVsPlayer(Player *player, EnemyBullet *enemy_bullets, int *currentScore, ScorePopup *popups, GameScreen *current_screen);
 
 void NonSpell1(Boss *boss, EnemyBullet *enemy_bullets, Vector2 player_pos, BossAssets *assets);

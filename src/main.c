@@ -55,12 +55,14 @@ int main(void)
 
             StopMusicStream(menu_music);
 
+            // Variáveis de Score
             int currentScore = 0;
             int highScore = LoadHighScore();
             float scoreTimer = 0.0f;
             float scoreInterval = 0.1f; 
             int pointsPerInterval = 10; 
 
+            // <<< INICIALIZAR POPUPS >>>
             ScorePopup popups[MAX_POPUPS];
             InitPopups(popups);
 
@@ -142,10 +144,12 @@ int main(void)
                     UpdatePlayer(&player, dt, bullets, shoot_sound, active_bombs);
                     UpdateBoss(&flandre, dt, enemy_bullets, player.position, &boss_assets);
 
+                    // <<< BÔNUS DE FASE >>>
                     if (flandre.justChangedPhase)
                     {
                         currentScore += 50000; 
                         flandre.justChangedPhase = false; 
+                        // Popup no centro
                         SpawnPopup(popups, (Vector2){400, 300}, "PHASE CLEAR! +50000", GOLD, 30);
                     }
 
@@ -153,10 +157,12 @@ int main(void)
                     UpdateEnemyBullets(enemy_bullets, dt);
                     UpdateBombProjectiles(active_bombs, dt);
                     
+                    // <<< UPDATE POPUPS >>>
                     UpdatePopups(popups, dt);
 
                     CheckPlayerVsBoss(&flandre, bullets);
                     
+                    // <<< CHECAGEM DE GRAZE >>>
                     CheckBossVsPlayer(&player, enemy_bullets, &currentScore, popups, &current_screen);
                 }
                 
@@ -172,7 +178,8 @@ int main(void)
                     DrawBullets(bullets);
                     DrawBombProjectiles(active_bombs);
                     
-                     DrawPopups(popups); 
+                    // <<< DESENHAR POPUPS (AQUI É O LUGAR CERTO) >>>
+                    DrawPopups(popups); 
 
                     DrawHealths(&player);
                     DrawBombs(&player);
