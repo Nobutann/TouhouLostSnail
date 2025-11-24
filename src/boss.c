@@ -22,6 +22,7 @@ void InitBoss(Boss *boss, Vector2 initial_pos)
     boss->frame_counter = 0;
     boss->move_timer = 0.0f;
     boss->is_moving = false;
+    boss->justChangedPhase = false;
 
     LoadBossSprites(&boss->sprites);
 }
@@ -373,6 +374,7 @@ void UpdateBoss(Boss *boss, float dt, EnemyBullet *enemy_bullets, Vector2 player
                 boss->frame_counter = 0;
                 boss->health = BOSS_HEALTH_NONSPELL2;
                 boss->max_health = BOSS_HEALTH_NONSPELL2;
+                boss->justChangedPhase = true;
             }
             break;
         
@@ -390,6 +392,7 @@ void UpdateBoss(Boss *boss, float dt, EnemyBullet *enemy_bullets, Vector2 player
                 boss->frame_counter = 0;
                 boss->health = BOSS_HEALTH_SPELL2;
                 boss->max_health = BOSS_HEALTH_SPELL2;
+                boss->justChangedPhase = true;
             }
             break;
 
@@ -405,6 +408,7 @@ void UpdateBoss(Boss *boss, float dt, EnemyBullet *enemy_bullets, Vector2 player
 
                 boss->current_phase = BOSS_PHASE_DEFEATED;
                 boss->frame_counter = 0;
+                boss->justChangedPhase = true;
             }
             break;
     }
@@ -519,7 +523,7 @@ void CheckPlayerVsBoss(Boss *boss, Bullet *player_bullets)
     }
 }
 
-void CheckBossVsPlayer(Player *player, EnemyBullet *enemy_bullets, GameScreen *current_screen)
+void CheckBossVsPlayer(Player *player, EnemyBullet *enemy_bullets, int *currentScore, ScorePopup *popups, GameScreen *current_screen)
 {
     if (player->is_invulnerable)
     {
@@ -536,23 +540,34 @@ void CheckBossVsPlayer(Player *player, EnemyBullet *enemy_bullets, GameScreen *c
     {
         if (enemy_bullets[i].active)
         {
+            float collisionDistance = HITBOX_RADIUS + enemy_bullets[i].radius;
+            float grazeDistance = collisionDistance + 30.0f;
+            
+            if (CheckCollisionCircles(player_center, grazeDistance, enemy_bullets[i].position, 0) && 
+                !CheckCollisionCircles(player_center, HITBOX_RADIUS, enemy_bullets[i].position, enemy_bullets[i].radius) && 
+                !enemy_bullets[i].hasBeenGrazed)
+            {
+                *currentScore += 150;
+                enemy_bullets[i].hasBeenGrazed = true;
+                SpawnPopup(popups, player->position, "GRAZE!", RED, 20);
+            }
+            
             if (CheckCollisionCircles(player_center, HITBOX_RADIUS, enemy_bullets[i].position, enemy_bullets[i].radius))
             {
                 LoseHealth(player, current_screen);
-
                 player->is_invulnerable = true;
                 player->invul_timer = INVULNERABILITY_TIME;
-
+                
                 for (int j = 0; j < MAX_ENEMY_BULLETS; j++)
                 {
                     enemy_bullets[j].active = false;
                 }
-
                 return;
             }
         }
     }
 }
+
 void UnloadBoss(Boss *boss)
 {
     UnloadBossSprites(&boss->sprites);

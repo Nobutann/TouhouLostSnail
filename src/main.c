@@ -4,7 +4,27 @@
 #include "bullets.h"
 #include "boss.h"
 #include "ult.h"
+#include <stdio.h>
 
+#define HIGHSCORE_FILE "highscore.txt"
+
+int LoadHighScore()
+{
+    int highScore = 0;
+    FILE *file = fopen(HIGHSCORE_FILE, "r");
+    if (file == NULL) return 0;
+    fscanf(file, "%d", &highScore);
+    fclose(file);
+    return highScore;
+}
+
+void SaveHighScore(int score)
+{
+    FILE *file = fopen(HIGHSCORE_FILE, "w");
+    if (file == NULL) { printf("ERRO: Salvar High Score\n"); return; }
+    fprintf(file, "%d", score);
+    fclose(file);
+}
 
 int main(void)
 {
@@ -39,6 +59,15 @@ int main(void)
 
             StopMusicStream(menu_music);
             PlayMusicStream(game_music);
+
+            int currentScore = 0;
+            int highScore = LoadHighScore();
+            float scoreTimer = 0.0f;
+            float scoreInterval = 0.1f; 
+            int pointsPerInterval = 10; 
+
+            ScorePopup popups[MAX_POPUPS];
+            InitPopups(popups);
 
             Player player;
             Bullet bullets[MAX_BULLETS];
@@ -130,14 +159,34 @@ int main(void)
 
                 if (!is_paused)
                 {
+                    scoreTimer += dt;
+                    if (scoreTimer >= scoreInterval)
+                    {
+                        currentScore += pointsPerInterval;
+                        scoreTimer -= scoreInterval; 
+                    }
+                    if (currentScore > highScore) 
+                    {
+                        highScore = currentScore;
+                    }
+
                     UpdatePlayer(&player, dt, bullets, shoot_sound);
                     UpdateBoss(&flandre, dt, enemy_bullets, player.position, &boss_assets);
+
+                    if (flandre.justChangedPhase)
+                    {
+                        currentScore += 50000; 
+                        flandre.justChangedPhase = false;
+                        SpawnPopup(popups, (Vector2){400, 300}, "PHASE CLEAR! +50000", GOLD, 30);
+                    }
+
                     UpdateBullets(bullets, dt);
                     UpdateEnemyBullets(enemy_bullets, dt);
                     UpdateUltimate(dt);
                     GameScreen *screen_pointer = &current_screen;
+                    UpdatePopups(popups, dt);
                     CheckPlayerVsBoss(&flandre, bullets);
-                    CheckBossVsPlayer(&player, enemy_bullets, screen_pointer);
+                    CheckBossVsPlayer(&player, enemy_bullets, &currentScore, popups, screen_pointer);
 
                     if (current_screen == GAMEOVER_SCREEN)
                     {
@@ -159,8 +208,11 @@ int main(void)
                     DrawEnemyBullets(enemy_bullets);
                     DrawBullets(bullets);
                     DrawUltimate();
+                    DrawPopups(popups);
                     DrawHealths(&player);
                     DrawUlts(&player);
+                    DrawText(TextFormat("SCORE: %010d", currentScore), 850, 20, 30, WHITE);
+                    DrawText(TextFormat("HIGH:  %010d", highScore), 850, 60, 30, LIGHTGRAY);
 
                     if (is_paused)
                     {
@@ -182,6 +234,11 @@ int main(void)
                         DrawTexture(menu_text, menu_pos.x, menu_pos.y, RAYWHITE);
                     }
                 EndDrawing();
+            }
+
+            if (highScore > LoadHighScore())
+            {
+                SaveHighScore(highScore);
             }
 
             StopMusicStream(game_music);
