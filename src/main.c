@@ -172,7 +172,7 @@ int main(void)
                     DrawBullets(bullets);
                     DrawBombProjectiles(active_bombs);
                     
-                    DrawPopups(popups); 
+                     DrawPopups(popups); 
 
                     DrawHealths(&player);
                     DrawBombs(&player);
