@@ -25,7 +25,6 @@ void InitUltimate(void)
     g_ultimate.cooldownTimer = 0.0f;
     g_ultimate.cooldownActive = false;
 
-    // Create linked list of frames
     for (int i = 0; i < TOTAL_FRAMES; i++)
     {
         UltFrame *newFrame = (UltFrame *)malloc(sizeof(UltFrame));
@@ -53,7 +52,6 @@ void InitUltimate(void)
         }
     }
 
-    // Load frame textures
     for (int i = 0; i < TOTAL_FRAMES; i++)
     {
         char path[256];
@@ -90,17 +88,14 @@ void StartUltimate(void)
         return;
     }
 
-    // Activate ULT
     g_ultimate.active = true;
     g_ultimate.usesLeft--;
     g_ultimate.frameTimer = 0.0f;
     g_ultimate.current = g_ultimate.head;
 
-    // Clear all bullets and disable bullet system
     ClearAllBullets();
     DisableBullets();
 
-    // Deal damage to boss
     BossTakeUltDamage(ULT_DAMAGE);
 }
 
@@ -111,7 +106,6 @@ void UpdateUltimate(float dt)
         return;
     }
 
-    // Update cooldown timer
     if (g_ultimate.cooldownActive)
     {
         g_ultimate.cooldownTimer -= dt;
@@ -123,12 +117,10 @@ void UpdateUltimate(float dt)
         }
     }
 
-    // Update active ULT
     if (g_ultimate.active)
     {
         g_ultimate.frameTimer += dt;
 
-        // Check if we need to advance to next frame
         if (g_ultimate.frameTimer >= FRAME_DURATION)
         {
             g_ultimate.frameTimer -= FRAME_DURATION;
@@ -139,12 +131,10 @@ void UpdateUltimate(float dt)
             }
             else
             {
-                // ULT animation finished
                 g_ultimate.active = false;
                 g_ultimate.frameTimer = 0.0f;
                 g_ultimate.current = g_ultimate.head;
 
-                // Start cooldown
                 g_ultimate.cooldownActive = true;
                 g_ultimate.cooldownTimer = ULT_COOLDOWN;
             }
@@ -167,14 +157,12 @@ void DrawUltimate(void)
 
     Texture2D currentTexture = g_ultimate.frames[frameIndex];
 
-    // Calculate position to center the ULT in the playable area
-    // Playable area is x: 0-960, y: 0-800
     float scale = 3.2f;
     float w = currentTexture.width * scale;
     float h = currentTexture.height * scale;
 
     float ultX = (960.0f - w) / 2.0f;
-    ultX -= 60.0f;  // Shift left
+    ultX -= 60.0f;
     float ultY = (800.0f - h) / 2.0f;
 
     DrawTextureEx(currentTexture, (Vector2){ ultX, ultY }, 0.0f, scale, WHITE);
@@ -187,7 +175,6 @@ void UnloadUltimate(void)
         return;
     }
 
-    // Free linked list
     UltFrame *current = g_ultimate.head;
     while (current != NULL)
     {
@@ -196,7 +183,6 @@ void UnloadUltimate(void)
         current = next;
     }
 
-    // Unload textures
     for (int i = 0; i < TOTAL_FRAMES; i++)
     {
         UnloadTexture(g_ultimate.frames[i]);

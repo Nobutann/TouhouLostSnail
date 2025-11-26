@@ -43,6 +43,7 @@ int main(void)
 
     Texture2D menu_background = LoadTexture("assets/sprites/menu/menu.png");
     Texture2D gameover_background = LoadTexture("assets/sprites/menu/gameover.png");
+    Texture2D credits_background = LoadTexture("assets/img/telacreditos.png");
 
     while (current_screen != EXIT_SCREEN && !WindowShouldClose())
     {
@@ -50,6 +51,11 @@ int main(void)
         {
             PlayMusicStream(menu_music);
             current_screen = menu(menu_music, menu_background);
+        }
+        else if (current_screen == CREDITS_SCREEN)
+        {
+            PlayMusicStream(menu_music);
+            current_screen = credits(menu_music, credits_background);
         }
         else if (current_screen == GAME_SCREEN)
         {
@@ -274,6 +280,7 @@ int main(void)
     UnloadMusicStream(game_music);
     UnloadTexture(menu_background);
     UnloadTexture(gameover_background);
+    UnloadTexture(credits_background);
 
     CloseAudioDevice();
     CloseWindow();
