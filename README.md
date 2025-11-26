@@ -66,3 +66,12 @@ Spell Card é uma fase especial em que o boss fica parado e lança uma pattern d
 
 ## Créditos
 
+Todos os direitos do universo, personagens e música de Touhou Project são de ZUN e Team Shanghai Alice. Touhou: Lost Snail não tem **NENHUMA** afiliação com o jogo oficial, somos apenas um grupo de fãs fazendo um jogo para fãs, sem nenhuma intenção comercial.
+
+---
+
+## Desenvolvedores
+
+- [Luiz Gonzaga](www.linkedin.com/in/gonzaga07)
+- [Marco Aurélio](https://www.linkedin.com/in/marco-aur%C3%A9lio-82475a35a/?utm_source=share_via&utm_content=profile&utm_medium=member_android)
+- [Walter Maia](https://www.linkedin.com/in/walter-maia-/)
