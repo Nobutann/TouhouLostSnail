@@ -44,6 +44,7 @@ int main(void)
     Texture2D menu_background = LoadTexture("assets/sprites/menu/menu.png");
     Texture2D gameover_background = LoadTexture("assets/sprites/menu/gameover.png");
     Texture2D credits_background = LoadTexture("assets/img/telacreditos.png");
+    Texture2D endgame_background = LoadTexture("assets/img/endgame.png");
 
     while (current_screen != EXIT_SCREEN && !WindowShouldClose())
     {
@@ -176,8 +177,9 @@ int main(void)
                         highScore = currentScore;
                     }
 
+                    GameScreen *screen_pointer = &current_screen;
                     UpdatePlayer(&player, dt, bullets, shoot_sound);
-                    UpdateBoss(&flandre, dt, enemy_bullets, player.position, &boss_assets);
+                    UpdateBoss(&flandre, dt, enemy_bullets, player.position, &boss_assets, menu_music, screen_pointer, endgame_background);
 
                     if (flandre.justChangedPhase)
                     {
@@ -189,7 +191,6 @@ int main(void)
                     UpdateBullets(bullets, dt);
                     UpdateEnemyBullets(enemy_bullets, dt);
                     UpdateUltimate(dt);
-                    GameScreen *screen_pointer = &current_screen;
                     UpdatePopups(popups, dt);
                     CheckPlayerVsBoss(&flandre, bullets);
                     CheckBossVsPlayer(&player, enemy_bullets, &currentScore, popups, screen_pointer);
@@ -281,6 +282,7 @@ int main(void)
     UnloadTexture(menu_background);
     UnloadTexture(gameover_background);
     UnloadTexture(credits_background);
+    UnloadTexture(endgame_background);
 
     CloseAudioDevice();
     CloseWindow();

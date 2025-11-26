@@ -29,21 +29,12 @@ typedef struct
     bool active;
 } Bullet;
 
-typedef enum
-{
-    BULLET_TYPE_NORMAL,
-    BULLET_TYPE_AIMED,
-    BULLET_TYPE_CURVE,
-    BULLET_TYPE_ACCEL
-} EnemyBulletType;
-
 typedef struct
 {
     Vector2 position;
     Vector2 velocity;
     float angle;
     float speed;
-    EnemyBulletType type;
     Texture2D sprite;
     float lifetime;
     bool active;
@@ -56,7 +47,7 @@ void UpdateBullets(Bullet *bullets, float dt);
 void DrawBullets(Bullet *bullets);
 
 void InitEnemyBullets(EnemyBullet *bullets);
-void SpawnEnemyBullet(EnemyBullet *bullets, Vector2 position, float angle, float speed, EnemyBulletType type, Texture2D sprite);
+void SpawnEnemyBullet(EnemyBullet *bullets, Vector2 position, float angle, float speed, Texture2D sprite);
 void UpdateEnemyBullets(EnemyBullet *bullets, float dt);
 void DrawEnemyBullets(EnemyBullet *bullets);
 

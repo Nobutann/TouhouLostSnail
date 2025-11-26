@@ -113,7 +113,7 @@ void InitEnemyBullets(EnemyBullet *bullets)
     }
 }
 
-void SpawnEnemyBullet(EnemyBullet *bullets, Vector2 position, float angle, float speed, EnemyBulletType type, Texture2D sprite)
+void SpawnEnemyBullet(EnemyBullet *bullets, Vector2 position, float angle, float speed, Texture2D sprite)
 {
     if (!g_bullets_enabled)
     {
@@ -129,7 +129,6 @@ void SpawnEnemyBullet(EnemyBullet *bullets, Vector2 position, float angle, float
             bullets[i].speed = speed;
             bullets[i].velocity.x = cosf(angle) * speed;
             bullets[i].velocity.y = sinf(angle) * speed;
-            bullets[i].type = type;
             bullets[i].active = true;
             bullets[i].sprite = sprite;
             bullets[i].lifetime = 0.0f;

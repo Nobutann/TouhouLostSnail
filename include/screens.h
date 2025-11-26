@@ -15,5 +15,6 @@ typedef enum
 GameScreen menu(Music menu_music, Texture2D background);
 GameScreen gameover(Texture2D background, Music menu_music);
 GameScreen credits(Music menu_music, Texture2D background);
+GameScreen endgame(Music menu_music, Texture2D background);
 
 #endif

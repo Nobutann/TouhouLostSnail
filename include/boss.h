@@ -40,7 +40,7 @@ typedef struct
 } Boss;
 
 void InitBoss(Boss *boss, Vector2 initial_pos);
-void UpdateBoss(Boss *boss, float dt, EnemyBullet *enemy_bullets, Vector2 player_pos, BossAssets *assets);
+void UpdateBoss(Boss *boss, float dt, EnemyBullet *enemy_bullets, Vector2 player_pos, BossAssets *assets, Music menu_music, GameScreen *current_screen, Texture2D endgame_background);
 void DrawBoss(Boss *boss);
 void UnloadBoss(Boss *boss);
 
