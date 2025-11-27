@@ -21,7 +21,7 @@ jobs:
 
       - name: Install Raylib
         run: |
-          git clone https://github.com/raysan5/raylib.git
+          git clone --depth 1 https://github.com/raysan5/raylib.git
           cd raylib/src
           make PLATFORM=PLATFORM_DESKTOP
           sudo make install
@@ -59,7 +59,7 @@ jobs:
         uses: msys2/setup-msys2@v2
         with:
           msystem: MINGW64
-          update: true
+          update: false
           install: >-
             mingw-w64-x86_64-gcc
             mingw-w64-x86_64-make
@@ -68,7 +68,7 @@ jobs:
       - name: Install Raylib
         shell: msys2 {0}
         run: |
-          git clone https://github.com/raysan5/raylib.git
+          git clone --depth 1 https://github.com/raysan5/raylib.git
           cd raylib/src
           make PLATFORM=PLATFORM_DESKTOP
           make install
@@ -136,11 +136,11 @@ jobs:
 
             ## Como jogar
             ### Linux:
-                ```bash
+            ```bash
                 tar -xzf TouhouLostSnail-v0.1.0-beta.1-linux.tar.gz
                 cd TouhouLostSnail-linux
                 ./TouhouLostSnail
-                ```
+            ```
 
             ### Windows:
                 1. Extraia o arquivo ZIP
