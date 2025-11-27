@@ -72,14 +72,13 @@ jobs:
           git clone --depth 1 https://github.com/raysan5/raylib.git
           cd raylib/src
           make PLATFORM=PLATFORM_DESKTOP
-          make install
           cd ../..
 
       - name: Build for Windows
         shell: msys2 {0}
         run: |
           mkdir -p bin
-          gcc -O3 -s -Wall -std=c99 -I include src/*.c -o bin/TouhouLostSnail.exe -lraylib -lopengl32 -lgdi32 -lwinmm -static
+          gcc -O3 -s -Wall -std=c99 -I include -I raylib/src src/*.c -o bin/TouhouLostSnail.exe -L raylib/src -lraylib -lopengl32 -lgdi32 -lwinmm -static
           strip bin/TouhouLostSnail.exe
 
       - name: Package Windows build
